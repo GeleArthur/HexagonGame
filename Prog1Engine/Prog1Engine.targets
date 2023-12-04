@@ -1,0 +1,8 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Create the empty 'Resources' directory if necessary (solution folder) -->
+	<Target Name="CreateEmptyFolder" BeforeTargets="PrepareForBuild">
+		<Exec Command="powershell -Command if (-not (Test-Path '$(ProjectDir)..\Resources')) { New-Item -ItemType Directory '$(ProjectDir)..\Resources' -Force }" />
+	</Target>
+
+</Project>

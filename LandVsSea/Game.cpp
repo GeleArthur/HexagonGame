@@ -11,7 +11,7 @@ void Start()
 
 void Draw()
 {
-	ClearBackground();
+	ClearBackground(0.13,0.123,0.1438);
 
 	// Put your own draw statements here
 

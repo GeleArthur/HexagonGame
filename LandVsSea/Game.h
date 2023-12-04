@@ -1,5 +1,7 @@
 #pragma once
 #include <utils.h>
+
+#include "Hexagon.h"
 using namespace utils;
 
 #pragma region gameInformation
@@ -8,15 +10,16 @@ std::string g_WindowTitle{ "Project name - Name, firstname - 1DAExx" };
 
 // Change the window dimensions here
 float g_WindowWidth{ 800 };
-float g_WindowHeight{ 600 };
+float g_WindowHeight{ 800 };
 #pragma endregion gameInformation
 
 
 
 #pragma region ownDeclarations
-// Declare your own global variables here
 
-// Declare your own functions here
+Hexagon g_World[10][10]{};
+Hexagon& GetHex(const int r, const int q);
+
 
 #pragma endregion ownDeclarations
 

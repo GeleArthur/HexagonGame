@@ -24,9 +24,6 @@
     <ClCompile Include="Hexagon.cpp">
       <Filter>GameFiles</Filter>
     </ClCompile>
-    <ClCompile Include="HexagonManager.cpp">
-      <Filter>GameFiles</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -36,9 +33,6 @@
       <Filter>GameFiles</Filter>
     </ClInclude>
     <ClInclude Include="Hexagon.h">
-      <Filter>GameFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="HexagonManager.h">
       <Filter>GameFiles</Filter>
     </ClInclude>
   </ItemGroup>

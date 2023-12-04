@@ -1,29 +1,18 @@
 ﻿#include "pch.h"
 #include "Hexagon.h"
 
-
-Hexagon::Hexagon()
+Point2f Hexagon::GetCoords()
 {
-	
-};
+	return Point2f{
+		(size) * (sqrtf(3.0f) * q + sqrtf(3.0f) / 2.0f * r),
+		(size) * (3.0f / 2.0f * r)
+	};
 
-void Hexagon::SetUp(int q, int r, float size)
-{
-	this->q = q;
-	this->r = r;
-	this->size = size;
-}
-
-void Hexagon::GetCoords(Point2f &out)
-{
-	out.x = (size) * (sqrtf(3.0f) * q + sqrtf(3.0f)/2.0f * r);
-	out.y = (size) * (3.0f/2.0f * r);
 }
 
 void Hexagon::DrawHexagons()
 {
-	Point2f coord;
-	GetCoords(coord);
+	const Point2f coord{GetCoords()};
 		
 	Point2f hex[6]{};
 	for (int k{}; k < 6; ++k)

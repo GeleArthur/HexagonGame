@@ -1,17 +1,20 @@
 #pragma once
+#include <SDL_ttf.h>
 #include <windows.h>
 #include <SDL_video.h>
+#include <unordered_map>
 #include <vector>
 
 #include "AbstractGame.h"
 #include "../Utils/Matrix.h"
 #include "../Utils/Mouse.h"
+#include "../Utils/Texture.h"
 #include "../Utils/Vector2d.h"
+#include "../Utils/Rect.h"
 #define GE (GameEngine::GetSingleton())
 
 class GameEngine
 {
-private:
 	bool _quitting;
 	SDL_Window *_window{};
 	AbstractGame *_game{};
@@ -48,7 +51,6 @@ public:
 	void SetTitle(std::string newName);
 	void SetVsync(int setting);
 	
-
 	float GetDeltaTime();
 	float GetCurrentTimer() ;
 
@@ -88,6 +90,14 @@ public:
 	void DrawPolygon(const Vector2d* pVertices, size_t nrVertices, bool closed = true, float lineWidth = 1.0f);
 	void FillPolygon(const std::vector<Vector2d>& vertices);
 	void FillPolygon(const Vector2d* pVertices, size_t nrVertices);
+
+	bool TextureFromFile(const std::string& path, Texture& texture);
+	bool TextureFromString(const std::string& text, TTF_Font* pFont, /*const Color4f& textColor,*/ Texture& texture);
+	bool TextureFromString(const std::string& text, const std::string& fontPath, int ptSize, /*const Color4f& textColor,*/ Texture& texture);
+	void TextureFromSurface(const SDL_Surface* pSurface, Texture& textureData);
+	void DrawTexture(const Texture& texture, const Vector2d& dstTopLeft, const Rect& srcRect = Rect{0,0,0,0});
+	void DrawTexture(const Texture& texture, const Rect& dstRect, const Rect& srcRect = {});
+	void DeleteTexture(Texture& texture);
 
 #pragma endregion  Drawing
 

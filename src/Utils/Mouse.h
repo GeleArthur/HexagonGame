@@ -1,9 +1,9 @@
 ﻿#pragma once
+#include "Vector2d.h"
 
 struct Mouse
 {
-	float x;
-	float y;
+	Vector2d position;
 	bool holdingDown;
 	
 	bool downThisFrame;

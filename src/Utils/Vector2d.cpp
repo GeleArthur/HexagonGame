@@ -62,4 +62,9 @@ Vector2d Vector2d::operator*(float scaler)
 	return Vector2d(x*scaler, y*scaler);
 }
 
+Vector2d Vector2d::operator/(float scaler)
+{
+	return Vector2d(x/scaler, y/scaler);
+}
+
 

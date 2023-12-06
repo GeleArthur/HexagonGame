@@ -8,8 +8,8 @@ Layout::Layout(Orientation orientation_, Vector2d size_, Vector2d origin_):
 Vector2d Layout::hex_to_pixel(Hexagon h)
 {
 	const Orientation& M = orientation;
-	double x = (M.f0 * h.q + M.f1 * h.r) * size.x;
-	double y = (M.f2 * h.q + M.f3 * h.r) * size.y;
+	double x = (M.f0 * h.GetQ() + M.f1 * h.GetR()) * size.x;
+	double y = (M.f2 * h.GetQ() + M.f3 * h.GetR()) * size.y;
 	return Vector2d(x + origin.x, y + origin.y);
 }
 

@@ -11,10 +11,13 @@ class HexagonManager
 	Layout _layout;
 	Hexagon** _data;
 
+	std::vector<Texture> _stringsASS{};
+
 public:
 	HexagonManager(int size);
 	~HexagonManager();
+	void Start();
 	void Draw();
-	Hexagon& GetHex(int r, int q);
+	Hexagon& GetHex(int r, int q) const;
 };
 

@@ -28,6 +28,10 @@ src/Utils/Vector2d.h
 src/Utils/Matrix.h
 src/Utils/Matrix.cpp
 src/Utils/Mouse.h
+src/Utils/Texture.h
+src/Utils/Texture.cpp
+src/Utils/Rect.h
+src/Utils/Rect.cpp
 )
 
 find_package(SDL2 CONFIG REQUIRED)

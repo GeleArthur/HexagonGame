@@ -3,19 +3,26 @@
 #include "Utils/Vector2d.h"
 
 
-struct Hexagon
+class Hexagon
 {
-	Hexagon(int q, int r);
-	Hexagon();
-	
 	int q;
 	int r;
 	// int s; // Not needed.
 	// float size;
 
+public:
+	Hexagon(int q, int r);
+	Hexagon();
+	void Set(int q, int r);
 
+	int GetQ() const;
+	int GetR() const;
+	int GetS() const;
 
-	Vector2d GetCoords();
-	void DrawHexagons();
-	int GetS();
+	int GetLength() const;
+	int GetDistance(const Hexagon other) const;
+
+	Hexagon operator+(const Hexagon other) const;
+	Hexagon operator-(const Hexagon other) const;
+	Hexagon operator*(int scaler) const;
 };

@@ -3,7 +3,7 @@
 #include <SDL_keyboard.h>
 #include "GameEngine/GameEngine.h"
 
-Game::Game() : _world(10)
+Game::Game() : _world(50)
 {
 	GE->SetWindowSize(640, 640);
 	GE->SetVsync(1);
@@ -12,7 +12,7 @@ Game::Game() : _world(10)
 
 void Game::Start()
 {
-
+	_world.Start();
 }
 
 void Game::Update()

@@ -16,11 +16,10 @@ void Vector2d::operator+=(const Vector2d &vector) {
 	y += vector.y;
 }
 
-Vector2d & Vector2d::operator-=(Vector2d &vector)
+void Vector2d::operator-=(const Vector2d &vector)
 {
 	x -= vector.x;
 	y -= vector.y;
-	return *this;
 }
 
 Vector2d & Vector2d::operator/=(float scaler)

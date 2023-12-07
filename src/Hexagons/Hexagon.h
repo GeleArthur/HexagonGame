@@ -1,14 +1,12 @@
 ﻿#pragma once
-#include "GameEngine/GameEngine.h"
-#include "Utils/Vector2d.h"
+#include "../GameEngine/GameEngine.h"
+#include "../Utils/Vector2d.h"
 
 
 class Hexagon
 {
 	int q;
 	int r;
-	// int s; // Not needed.
-	// float size;
 
 public:
 	Hexagon(int q, int r);
@@ -21,8 +19,11 @@ public:
 
 	int GetLength() const;
 	int GetDistance(const Hexagon other) const;
+	static Hexagon Direction(int direction);
+	Hexagon Neighbor(int direction) const;
 
 	Hexagon operator+(const Hexagon other) const;
 	Hexagon operator-(const Hexagon other) const;
 	Hexagon operator*(int scaler) const;
+	bool operator==(Hexagon other) const;
 };

@@ -3,6 +3,8 @@
 #include <SDL_keyboard.h>
 #include "GameEngine/GameEngine.h"
 
+
+
 Game::Game() : _world(50)
 {
 	GE->SetWindowSize(640, 640);
@@ -13,11 +15,12 @@ Game::Game() : _world(50)
 void Game::Start()
 {
 	_world.Start();
+	GE->EnableCameraDrag(true);
 }
 
 void Game::Update()
 {
-	
+
 }
 
 void Game::Draw()
@@ -26,3 +29,4 @@ void Game::Draw()
 	
 	_world.Draw();
 }
+

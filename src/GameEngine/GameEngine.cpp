@@ -18,6 +18,24 @@ void GameEngine::Error(std::string message)
 	exit(-1);
 }
 
+void GameEngine::CameraDragUpdate()
+{
+	Mouse currentMouse{GE->GetMouse()};
+	if(currentMouse.downThisFrame)
+	{
+		_mousePrevFrame = currentMouse.position;
+	}
+	if(currentMouse.holdingDown)
+	{
+		Vector2d currentPosition{GE->GetCameraPosition()};
+		currentPosition -= currentMouse.position - _mousePrevFrame;
+		GE->SetCameraPosition(currentPosition);
+		GE->ApplyCamera();
+
+		_mousePrevFrame = currentMouse.position;
+	}
+}
+
 GameEngine::GameEngine(): _quitting(false)
 {
 	_gameEngineSingleton = this;
@@ -172,6 +190,8 @@ void GameEngine::Run()
 			_deltaTime = std::chrono::duration<float>(timeNow - prevTime).count();
 			prevTime = timeNow;
 
+			if(_isCameraDragEnabled)
+				CameraDragUpdate();
 			_game->Update();
 			_game->Draw();
 
@@ -232,6 +252,11 @@ void GameEngine::SetCameraRotationX(float rotation)
 	_camera.m22 = cos(rotation);
 	_camera.m12 = -sin(rotation);
 	_camera.m21 = sin(rotation);
+}
+
+void GameEngine::EnableCameraDrag(bool isEnabled)
+{
+	_isCameraDragEnabled = isEnabled;
 }
 
 const Mouse& GameEngine::GetMouse()

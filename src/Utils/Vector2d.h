@@ -9,7 +9,7 @@ struct Vector2d
 	float y;
 
     void operator +=(const Vector2d &vector);
-    Vector2d& operator -=(Vector2d &vector);
+    void operator -=(const Vector2d &vector);
 	Vector2d& operator /=(float scaler);
 	Vector2d& operator *=(float scaler);
 	Vector2d operator +(Vector2d v2);

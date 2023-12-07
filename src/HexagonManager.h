@@ -1,6 +1,11 @@
 ﻿#pragma once
-#include "Hexagon.h"
-#include "Layout.h"
+#include <map>
+#include <vector>
+
+#include "Piece.h"
+#include "Hexagons/Hexagon.h"
+#include "Hexagons/Layout.h"
+#include "GameEngine/GameEngine.h"
 
 class HexagonManager
 {
@@ -10,6 +15,7 @@ class HexagonManager
 	int rows;
 	Layout _layout;
 	Hexagon** _data;
+	std::unordered_map<Hexagon, Piece> _newWorld{};
 
 	std::vector<Texture> _stringsASS{};
 
@@ -19,5 +25,6 @@ public:
 	void Start();
 	void Draw();
 	Hexagon& GetHex(int r, int q) const;
+	
 };
 

@@ -25,6 +25,7 @@ class GameEngine
 	float _currentTime;
 	Mouse _mouse{};
 	Matrix4x4 _camera{Matrix4x4::DefaultMatrix()};
+	bool _isCameraDragEnabled{};
 
 	std::string _windowTitle{"GAME!!!"};
 	int _windowWidth{400};
@@ -33,6 +34,9 @@ class GameEngine
 	const Uint8* _keyBoardState{};
 
 	void Error(std::string message);
+
+	Vector2d _mousePrevFrame;
+	void CameraDragUpdate();
 
 public:
 	GameEngine();
@@ -52,13 +56,14 @@ public:
 	void SetVsync(int setting);
 	
 	float GetDeltaTime();
-	float GetCurrentTimer() ;
+	float GetCurrentTimer();
 
 	void ApplyCamera();
 	void SetCameraPosition(Vector2d newPosition);
 	Vector2d GetCameraPosition();
 	void SetCameraZoom(Vector2d newScale);
 	void SetCameraRotationX(float rotation);
+	void EnableCameraDrag(bool isEnabled);
 
 	const Mouse& GetMouse();
 	const Uint8* GetKeyBoardState();

@@ -1,10 +1,7 @@
 ﻿#include "Hexagon.h"
 
-#include "Layout.h"
-
 Hexagon::Hexagon(int q, int r) : q(q), r(r)
 {
-	
 }
 
 Hexagon::Hexagon(): q(0), r(0)
@@ -29,8 +26,23 @@ int Hexagon::GetLength() const
 
 int Hexagon::GetDistance(const Hexagon other) const
 {
-	// Might need to flip???
+	// Might need to flip?
 	return (other-*this).GetLength();
+}
+
+Hexagon Hexagon::Direction(int direction)
+{
+	constexpr Hexagon directions[6]
+	{
+		{1, 0}, {1, -1}, {0, -1},
+		{-1, 0}, {-1, 1}, {0, 1}
+	};
+	return directions[direction];
+}
+
+Hexagon Hexagon::Neighbor(int direction) const
+{
+	return *this + Direction(direction);
 }
 
 Hexagon Hexagon::operator+(const Hexagon other) const
@@ -46,6 +58,11 @@ Hexagon Hexagon::operator-(const Hexagon other) const
 Hexagon Hexagon::operator*(int scaler) const
 {
 	return Hexagon{q * scaler, r * scaler};
+}
+
+bool Hexagon::operator==(Hexagon other) const
+{
+	return q == other.q && r == other.r;
 }
 
 int Hexagon::GetQ() const

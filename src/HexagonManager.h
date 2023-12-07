@@ -14,9 +14,7 @@ class HexagonManager
 	int cols;
 	int rows;
 	Layout _layout;
-	Hexagon** _data;
-	std::unordered_map<Hexagon, Piece> _newWorld{};
-
+	std::unordered_map<Hexagon, Piece> _grid{};
 	std::vector<Texture> _stringsASS{};
 
 public:
@@ -24,7 +22,7 @@ public:
 	~HexagonManager();
 	void Start();
 	void Draw();
-	Hexagon& GetHex(int r, int q) const;
+	Piece GetPiece(Hexagon hex) const;
 	
 };
 

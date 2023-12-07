@@ -1,7 +1,5 @@
 #pragma once
-#include "Hexagons/Hexagon.h"
-#include "Hexagons/HexagonManager.h"
-#include "Utils/Vector2d.h"
+#include "HexagonManager.h"
 #include "GameEngine/AbstractGame.h"
 
 class Game : public AbstractGame

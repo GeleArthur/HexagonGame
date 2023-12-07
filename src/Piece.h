@@ -9,6 +9,10 @@ enum SideType
 
 struct Piece
 {
-	Hexagon& hexagon;
-	SideType sides[6];
+	// Hexagon hexagon;
+	SideType sides[6]
+	{
+		land, land, land,
+		land, land, land
+	};
 };

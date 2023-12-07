@@ -32,7 +32,7 @@ int Hexagon::GetDistance(const Hexagon other) const
 
 Hexagon Hexagon::Direction(int direction)
 {
-	constexpr Hexagon directions[6]
+	const Hexagon directions[6]
 	{
 		{1, 0}, {1, -1}, {0, -1},
 		{-1, 0}, {-1, 1}, {0, 1}
@@ -63,6 +63,13 @@ Hexagon Hexagon::operator*(int scaler) const
 bool Hexagon::operator==(Hexagon other) const
 {
 	return q == other.q && r == other.r;
+}
+
+size_t std::hash<Hexagon>::operator()(const Hexagon &other) const noexcept
+{
+	const size_t hashQ = std::hash<int>{}(other.GetQ());
+	const size_t hashR = std::hash<int>{}(other.GetR());
+	return hashQ ^ (hashR << 1); // AI said it was good.
 }
 
 int Hexagon::GetQ() const

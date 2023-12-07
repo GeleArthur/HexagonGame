@@ -3,6 +3,7 @@
 #include "../Utils/Vector2d.h"
 
 
+
 class Hexagon
 {
 	int q;
@@ -26,4 +27,15 @@ public:
 	Hexagon operator-(const Hexagon other) const;
 	Hexagon operator*(int scaler) const;
 	bool operator==(Hexagon other) const;
+	
 };
+
+namespace std
+{
+	template<>
+	struct hash<Hexagon>
+	{
+		size_t operator()(const Hexagon& other) const noexcept;
+	};
+}
+

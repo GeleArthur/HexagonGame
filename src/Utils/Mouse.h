@@ -1,11 +1,19 @@
 ﻿#pragma once
 #include "Vector2d.h"
 
-struct Mouse
+struct MouseButton
 {
-	Vector2d position;
 	bool holdingDown;
 	
 	bool downThisFrame;
 	bool upThisFrame;
 };
+
+struct Mouse
+{
+	Vector2d position;
+	
+	MouseButton left;
+	MouseButton right;
+};
+

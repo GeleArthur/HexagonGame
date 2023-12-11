@@ -22,6 +22,11 @@ void Vector2d::operator-=(const Vector2d &vector)
 	y -= vector.y;
 }
 
+bool Vector2d::operator!=(const Vector2d &vector)
+{
+	return x != vector.x || y != vector.y;
+}
+
 Vector2d & Vector2d::operator/=(float scaler)
 {
 	x /= scaler;

@@ -27,7 +27,6 @@ public:
 	Hexagon operator-(const Hexagon other) const;
 	Hexagon operator*(int scaler) const;
 	bool operator==(Hexagon other) const;
-	
 };
 
 namespace std

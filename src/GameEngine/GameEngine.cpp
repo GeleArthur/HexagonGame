@@ -21,11 +21,11 @@ void GameEngine::Error(std::string message)
 void GameEngine::CameraDragUpdate()
 {
 	Mouse currentMouse{GE->GetMouse()};
-	if(currentMouse.downThisFrame)
+	if(currentMouse.left.downThisFrame)
 	{
 		_mousePrevFrame = currentMouse.position;
 	}
-	if(currentMouse.holdingDown)
+	if(currentMouse.left.holdingDown)
 	{
 		Vector2d currentPosition{GE->GetCameraPosition()};
 		currentPosition -= currentMouse.position - _mousePrevFrame;
@@ -156,8 +156,10 @@ void GameEngine::Run()
 
 	while (!_quitting)
 	{
-		_mouse.downThisFrame = false;
-		_mouse.upThisFrame = false;
+		_mouse.left.downThisFrame = false;
+		_mouse.left.upThisFrame = false;
+		_mouse.right.downThisFrame = false;
+		_mouse.right.upThisFrame = false;
 
 		while (SDL_PollEvent(&e) != 0)
 		{
@@ -171,12 +173,29 @@ void GameEngine::Run()
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				// if(e.button.state)
-				_mouse.holdingDown = true;
-				_mouse.downThisFrame = true;
+				if(e.button.button == '\x1')
+				{
+					_mouse.left.holdingDown = true;
+					_mouse.left.downThisFrame = true;
+				}
+				if(e.button.button == '\x3')
+				{
+					_mouse.right.holdingDown = true;
+					_mouse.right.downThisFrame = true;
+				}
+
 				break;
 			case SDL_MOUSEBUTTONUP:
-				_mouse.holdingDown = false;
-				_mouse.upThisFrame = true;
+				if(e.button.button == '\x1')
+				{
+					_mouse.left.holdingDown = false;
+					_mouse.left.upThisFrame = true;
+				}
+				if(e.button.button == '\x3')
+				{
+					_mouse.right.holdingDown = false;
+					_mouse.right.upThisFrame = true;
+				}
 				break;
 			default:
 				break;
@@ -194,6 +213,7 @@ void GameEngine::Run()
 				CameraDragUpdate();
 			_game->Update();
 			_game->Draw();
+			DrawUi();
 
 			SDL_GL_SwapWindow(_window);
 		}
@@ -210,6 +230,17 @@ void GameEngine::CleanUp()
 	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
+}
+
+// I am so smart
+void GameEngine::DrawUi()
+{
+	GLfloat matrix[16];
+	Matrix4x4::DefaultMatrix().openGlArray(matrix);
+	glLoadMatrixf(matrix);
+	_game->DrawUI();
+
+	ApplyCamera();
 }
 
 float GameEngine::GetDeltaTime()
@@ -443,7 +474,7 @@ void GameEngine::FillPolygon(const Vector2d *pVertices, size_t nrVertices)
 bool GameEngine::TextureFromFile(const std::string &path, Texture &texture)
 {
 	//Load file for use as an image in a new surface.
-	SDL_Surface* pLoadedSurface = IMG_Load(("..\\" + path).c_str());
+	SDL_Surface* pLoadedSurface = IMG_Load((path).c_str());
 	if (pLoadedSurface == nullptr)
 	{
 		std::cerr << "TextureFromFile: SDL Error when calling IMG_Load: " << SDL_GetError() << std::endl;

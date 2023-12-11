@@ -22,7 +22,7 @@ void Layout::PolygonCorners(Hexagon h, Vector2d corners[6]) {
 	Vector2d center = HexToPixel(h);
 	for (int i = 0; i < 6; i++) {
 		Vector2d offset = HexCornerOffset(i);
-		corners[i] = Vector2d{center.x + offset.x,center.y + offset.y};
+		corners[i] = Vector2d{center.x + offset.x, center.y + offset.y};
 	}
 }
 
@@ -31,13 +31,8 @@ Hexagon Layout::PixelToHex(Vector2d point)
 	Vector2d pt = Vector2d((point.x - origin.x) / size.x, (point.y - origin.y) / size.y);
 
 	double qFrac{orientation.b0 * pt.x + orientation.b1 * pt.y};
-	double rFrac{orientation.b1 * pt.x + orientation.b3 * pt.y};
+	double rFrac{orientation.b2 * pt.x + orientation.b3 * pt.y};
 	double sFrac{-rFrac-qFrac};
-
-	double x = (orientation.f0 * qFrac + orientation.f1 * rFrac) * size.x;
-	double y = (orientation.f2 * qFrac + orientation.f3 * rFrac) * size.y;
-	
-	GE->FillEllipse(x, y, 30, 30);
 
 	int q = round(qFrac);
 	int r = round(rFrac);

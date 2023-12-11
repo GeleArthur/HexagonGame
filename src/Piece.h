@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Hexagons/Hexagon.h"
 
-enum SideType
+enum class SideType
 {
 	land,
 	sea
@@ -9,10 +9,12 @@ enum SideType
 
 struct Piece
 {
-	// Hexagon hexagon;
+	Piece();
+	Piece(SideType type1, SideType type2, SideType type3, SideType type4, SideType type5, SideType type6);
+	
 	SideType sides[6]
 	{
-		land, land, land,
-		land, land, land
+		SideType::land, SideType::land, SideType::land,
+		SideType::land, SideType::land, SideType::land
 	};
 };

@@ -10,6 +10,8 @@ file(GLOB helloworld_SRC
 add_executable(LandvsSea
 src/Game.cpp
 src/Game.h
+src/CameraSystem.cpp
+src/CameraSystem.h
 src/HexagonManager.cpp
 src/HexagonManager.h
 src/Piece.cpp
@@ -51,3 +53,6 @@ target_link_libraries(LandvsSea PRIVATE SDL2_image::SDL2_image)
 target_link_libraries(LandvsSea PRIVATE SDL2_ttf::SDL2_ttf)
 target_link_libraries(LandvsSea PRIVATE SDL2_mixer::SDL2_mixer)
 
+add_custom_command(TARGET LandvsSea POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/Resources $<TARGET_FILE_DIR:LandvsSea>)

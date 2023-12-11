@@ -47,6 +47,7 @@ public:
 	void Initialize();
 	void Run();
 	void CleanUp();
+	void DrawUi();
 
 	void SetGame(AbstractGame *game);
 	void SetWindowSize(int width, int height);

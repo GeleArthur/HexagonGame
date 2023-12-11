@@ -17,3 +17,7 @@ void AbstractGame::Update()
 void AbstractGame::Draw()
 {
 }
+
+void AbstractGame::DrawUI()
+{
+}

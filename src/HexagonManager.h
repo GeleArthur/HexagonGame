@@ -9,7 +9,6 @@
 
 class HexagonManager
 {
-	
 	int _size;
 	int cols;
 	int rows;
@@ -23,6 +22,6 @@ public:
 	void Start();
 	void Draw();
 	Piece GetPiece(Hexagon hex) const;
-	
+	void DrawDebugPiece(Hexagon hex, Piece piece);
 };
 

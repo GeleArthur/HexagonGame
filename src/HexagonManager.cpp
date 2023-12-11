@@ -43,15 +43,33 @@ void HexagonManager::Start()
 		{
 			for (int k{0}; k < scale; ++k)
 			{
+				// _grid[currentHex.Neighbor(direction)] = Piece{
+				// 	GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+				// 	GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+				// 	GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+				// 	GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+				// 	GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+				// 	GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land
+				// };
+
 				_grid[currentHex.Neighbor(direction)] = Piece{
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land
+					SideType::sea,
+					SideType::sea,
+					SideType::sea,
+					SideType::sea,
+					SideType::sea,
+					SideType::sea,
 				};
 				currentHex = currentHex.Neighbor(direction);
+				
+				for (int corner{0}; corner < 6; ++corner)
+				{
+					Hexagon other = currentHex.Neighbor(corner);
+					if(_grid.count(other))
+					{
+						_grid[currentHex].sides[corner] = _grid.at(other).sides[corner];
+					}
+				}
 			}
 		}
 	}

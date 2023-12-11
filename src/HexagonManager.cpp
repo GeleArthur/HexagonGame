@@ -2,16 +2,27 @@
 
 #include <sstream>
 
-HexagonManager::HexagonManager(int size) :
-	_size(size),
+HexagonManager::HexagonManager(const int size) :
 	_layout(Orientation(
-				sqrt(3.0)       , sqrt(3.0) / 2.0 , 0.0, 3.0 / 2.0,
-			    sqrt(3.0) / 3.0 , -1.0 / 3.0      , 0.0, 2.0 / 3.0,
-			    0.5
-			),	
-		    Vector2d{static_cast<float>(size), static_cast<float>(size)},
-		    Vector2d{0, 0})
+		        sqrt(3.0), sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0,
+		        sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
+		        0.5
+	        ),
+	        Vector2d{static_cast<float>(size), static_cast<float>(size)},
+	        Vector2d{0, 0}),
+	_uiSystem(_placeAblePieces, 6, _layout)
 {
+	for (int i{0}; i < 6; ++i)
+	{
+		_placeAblePieces[i] = Piece{
+			GE->Random(0.0f, 1.0f) > 0.5f ? SideType::sea : SideType::land,
+			GE->Random(0.0f, 1.0f) > 0.5f ? SideType::sea : SideType::land,
+			GE->Random(0.0f, 1.0f) > 0.5f ? SideType::sea : SideType::land,
+			GE->Random(0.0f, 1.0f) > 0.5f ? SideType::sea : SideType::land,
+			GE->Random(0.0f, 1.0f) > 0.5f ? SideType::sea : SideType::land,
+			GE->Random(0.0f, 1.0f) > 0.5f ? SideType::sea : SideType::land
+		};
+	}
 }
 
 HexagonManager::~HexagonManager()
@@ -51,7 +62,7 @@ Piece HexagonManager::GetPiece(const Hexagon hex) const
 	return _grid.at(hex);
 }
 
-void HexagonManager::DrawDebugPiece(Hexagon hex, Piece piece)
+void HexagonManager::DrawDebugPiece(Hexagon hex, Piece piece) const
 {
 	Vector2d center = _layout.HexToPixel(hex);
 
@@ -79,11 +90,32 @@ void HexagonManager::Draw()
 		DrawDebugPiece(piece.first, piece.second);
 	}
 
-	const Hexagon hex = _layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
+	if(_uiSystem.GetSelectedPiece() != -1)
+	{
+		const Hexagon hex = _layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
 
-	Vector2d hexPolygons[6];
-	_layout.PolygonCorners(hex, hexPolygons);
-	GE->SetColor(1, 0, 0);
-	GE->FillPolygon(hexPolygons, 6);
+		Piece& piece = _placeAblePieces[_uiSystem.GetSelectedPiece()];
+		DrawDebugPiece(hex, piece);
+
+		Vector2d outline[6];
+		_layout.PolygonCorners(hex, outline);
+		GE->SetColor(1,1,1);
+		GE->DrawPolygon(outline, 6);
+	}
+	
+	// Vector2d hexPolygons[6];
+	// _layout.PolygonCorners(hex, hexPolygons);
+	// GE->SetColor(1, 0, 0);
+	// GE->FillPolygon(hexPolygons, 6);
+}
+
+void HexagonManager::Update()
+{
+	_uiSystem.InputCheck();
+}
+
+void HexagonManager::DrawUi()
+{
+	_uiSystem.DrawUi();
 }
 

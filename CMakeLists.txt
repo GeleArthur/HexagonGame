@@ -16,6 +16,8 @@ src/HexagonManager.cpp
 src/HexagonManager.h
 src/Piece.cpp
 src/Piece.h
+src/UISystem.cpp
+src/UISystem.h
 
 src/Hexagons/Hexagon.cpp
 src/Hexagons/Hexagon.h

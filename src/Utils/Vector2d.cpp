@@ -1,5 +1,7 @@
 #include "Vector2d.h"
 
+#include <corecrt_math.h>
+
 Vector2d::Vector2d() :Vector2d{ 0.0f, 0.0f }{}
 
 Vector2d::Vector2d(float x, float y) :x{ x }, y{ y }{}
@@ -69,6 +71,11 @@ Vector2d Vector2d::operator*(float scaler)
 Vector2d Vector2d::operator/(float scaler)
 {
 	return Vector2d(x/scaler, y/scaler);
+}
+
+float Vector2d::Length() const
+{
+	return sqrtf(x*x+y*y);
 }
 
 

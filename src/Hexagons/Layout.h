@@ -6,13 +6,14 @@
 struct Layout
 {
 	const Orientation orientation;
-	const Vector2d size;
+	Vector2d size;
 	Vector2d origin;
 	Layout(Orientation orientation_, Vector2d size_, Vector2d origin_);
 
-	Vector2d HexToPixel(Hexagon h);
-	Vector2d HexCornerOffset(int corner) ;
-	void PolygonCorners(Hexagon h, Vector2d corners[6]) ;
-	Hexagon PixelToHex(Vector2d point);
+	Vector2d HexToPixel(Hexagon h) const;
+	Vector2d HexCornerOffset(int corner) const;
+	void PolygonCorners(Hexagon h, Vector2d corners[6]) const;
+	Hexagon PixelToHex(Vector2d point) const;
+	Vector2d GetDistanceBetweenHexPointUp() const;
 };
 

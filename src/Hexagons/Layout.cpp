@@ -5,47 +5,54 @@ Layout::Layout(Orientation orientation_, Vector2d size_, Vector2d origin_):
 {
 }
 
-Vector2d Layout::HexToPixel(Hexagon h)
+Vector2d Layout::HexToPixel(Hexagon h) const
 {
 	const Orientation& M = orientation;
-	double x = (M.f0 * h.GetQ() + M.f1 * h.GetR()) * size.x;
-	double y = (M.f2 * h.GetQ() + M.f3 * h.GetR()) * size.y;
+	const double x = (M.f0 * h.GetQ() + M.f1 * h.GetR()) * size.x;
+	const double y = (M.f2 * h.GetQ() + M.f3 * h.GetR()) * size.y;
 	return Vector2d(x + origin.x, y + origin.y);
 }
 
-Vector2d Layout::HexCornerOffset(int corner) {
-	double angle = 2.0 * M_PI * (orientation.start_angle + corner) / 6;
+Vector2d Layout::HexCornerOffset(int corner) const
+{
+	const double angle = 2.0 * M_PI * (orientation.start_angle + corner) / 6;
 	return Vector2d(size.x * cos(angle), size.y * sin(angle));
 }
 
-void Layout::PolygonCorners(Hexagon h, Vector2d corners[6]) {
-	Vector2d center = HexToPixel(h);
+void Layout::PolygonCorners(Hexagon h, Vector2d corners[6]) const
+{
+	const Vector2d center = HexToPixel(h);
 	for (int i = 0; i < 6; i++) {
-		Vector2d offset = HexCornerOffset(i);
+		const Vector2d offset = HexCornerOffset(i);
 		corners[i] = Vector2d{center.x + offset.x, center.y + offset.y};
 	}
 }
 
-Hexagon Layout::PixelToHex(Vector2d point)
+Hexagon Layout::PixelToHex(Vector2d point) const
 {
-	Vector2d pt = Vector2d((point.x - origin.x) / size.x, (point.y - origin.y) / size.y);
+	const Vector2d pt = Vector2d((point.x - origin.x) / size.x, (point.y - origin.y) / size.y);
 
-	double qFrac{orientation.b0 * pt.x + orientation.b1 * pt.y};
-	double rFrac{orientation.b2 * pt.x + orientation.b3 * pt.y};
-	double sFrac{-rFrac-qFrac};
+	const double qFrac{orientation.b0 * pt.x + orientation.b1 * pt.y};
+	const double rFrac{orientation.b2 * pt.x + orientation.b3 * pt.y};
+	const double sFrac{-rFrac-qFrac};
 
 	int q = round(qFrac);
 	int r = round(rFrac);
-	int s = round(sFrac);
+	const int s = round(sFrac);
 
-	double q_diff = abs(q - qFrac);
-	double r_diff = abs(r - rFrac);
-	double s_diff = abs(s - sFrac);
+	const double qDiff = abs(q - qFrac);
+	const double rDiff = abs(r - rFrac);
+	const double sDiff = abs(s - sFrac);
 
-	if (q_diff > r_diff && q_diff > s_diff)
+	if (qDiff > rDiff && qDiff > sDiff)
 		q = -r-s;
-	else if (r_diff > s_diff)
+	else if (rDiff > sDiff)
 		r = -q-s;
 
 	return Hexagon{q,r};
+}
+
+Vector2d Layout::GetDistanceBetweenHexPointUp() const
+{
+	return Vector2d{sqrtf(3) * size.x, 3.0f / 2.0f * size.y};
 }

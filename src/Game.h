@@ -9,8 +9,6 @@ private:
     HexagonManager _world;
     CameraSystem _camera;
     Texture _backGround;
-
-    
     
 public:
     Game();

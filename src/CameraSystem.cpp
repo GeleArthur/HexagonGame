@@ -13,11 +13,11 @@ void CameraSystem::Start()
 void CameraSystem::UpdateCamera()
 {
 	Mouse currentMouse{GE->GetMouse()};
-	if(currentMouse.right.downThisFrame)
+	if(currentMouse.left.downThisFrame)
 	{
 		_mousePrevFrame = currentMouse.position;
 	}
-	if(currentMouse.right.holdingDown)
+	if(currentMouse.left.holdingDown)
 	{
 		Vector2d currentPosition{GE->GetCameraPosition()};
 		const Vector2d newCameraPosition{currentPosition - (currentMouse.position - _mousePrevFrame)};

@@ -19,4 +19,6 @@ struct Vector2d
 	Vector2d operator /(Vector2d v2);
 	Vector2d operator *(float scaler);
 	Vector2d operator /(float scaler);
+
+	float Length() const;
 };

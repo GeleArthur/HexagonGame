@@ -21,6 +21,7 @@ void Game::Start()
 void Game::Update()
 {
 	_camera.UpdateCamera();
+	_world.Update();
 }
 
 void Game::Draw()
@@ -33,7 +34,7 @@ void Game::Draw()
 
 void Game::DrawUI()
 {
-	
+	_world.DrawUi();
 	
 }
 

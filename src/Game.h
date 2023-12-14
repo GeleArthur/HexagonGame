@@ -7,11 +7,12 @@ class Game : public AbstractGame
 {
 private:
     HexagonManager _world;
-    CameraSystem _camera;
+    CameraSystem* _camera;
     Texture _backGround;
     
 public:
     Game();
+    ~Game() override;
     void Start() override;
     void Update() override;
     void Draw() override;

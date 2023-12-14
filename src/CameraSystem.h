@@ -8,9 +8,8 @@ class CameraSystem
 	Rect _boundingBox;
 	
 public:
-	CameraSystem();
+	CameraSystem(const Rect& newBoundingBox);
 	void Start();
 	void UpdateCamera();
-	void SetBoundingBox(const Rect& newBoundingBox);
 	void DrawBoundingBox();
 };

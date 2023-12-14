@@ -3,8 +3,12 @@
 
 enum class SideType
 {
+	none,
 	land,
-	sea
+	sea,
+
+	
+	count
 };
 
 struct Piece

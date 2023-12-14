@@ -1,6 +1,6 @@
 ﻿#include "CameraSystem.h"
 
-CameraSystem::CameraSystem(): _mousePrevFrame(0,0), _boundingBox()
+CameraSystem::CameraSystem(const Rect& newBoundingBox): _mousePrevFrame(0,0), _boundingBox(newBoundingBox)
 {
 }
 
@@ -40,11 +40,6 @@ void CameraSystem::UpdateCamera()
 		
 		_mousePrevFrame = currentMouse.position;
 	}
-}
-
-void CameraSystem::SetBoundingBox(const Rect &newBoundingBox)
-{
-	_boundingBox = newBoundingBox;
 }
 
 void CameraSystem::DrawBoundingBox()

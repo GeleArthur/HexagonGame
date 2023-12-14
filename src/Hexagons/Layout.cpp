@@ -15,7 +15,7 @@ Vector2d Layout::HexToPixel(Hexagon h) const
 
 Vector2d Layout::HexCornerOffset(int corner) const
 {
-	const double angle = 2.0 * M_PI * (orientation.start_angle + corner) / 6;
+	const double angle = 2.0 * M_PI * (orientation.start_angle + corner) / 6.0;
 	return Vector2d(size.x * cos(angle), size.y * sin(angle));
 }
 

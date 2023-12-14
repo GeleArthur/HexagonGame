@@ -19,7 +19,8 @@ public:
 	void DrawUi();
 	Piece GetPiece(Hexagon hex) const;
 	void DrawDebugPiece(Hexagon hex, Piece piece) const;
-
+	SideType GetNeighborSide(const Hexagon& hex, int direction) const;
+	
 private:
 	Layout _layout;
 	std::unordered_map<Hexagon, Piece> _grid{};

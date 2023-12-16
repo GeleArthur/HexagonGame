@@ -14,17 +14,20 @@ public:
 	HexagonManager(int size);
 	~HexagonManager();
 	void Start();
-	void Draw();
+	void Draw() const;
 	void Update();
 	void DrawUi();
-	Piece GetPiece(Hexagon hex) const;
+	void PlaceHex(Hexagon location, int pieceIndex);
 	void DrawDebugPiece(Hexagon hex, Piece piece) const;
-	SideType GetNeighborSide(const Hexagon& hex, int direction) const;
-	
+	void PolygonDebugPieceSide(const Hexagon &hex, int direction, Vector2d polygons[3]) const;
+	int GetInvertedDirection(int direction) const;
+	SideType GetSide(const Hexagon &hex, int direction) const;
+	UISystem* GetUiSytem();
+
 private:
 	Layout _layout;
 	std::unordered_map<Hexagon, Piece> _grid{};
-	UISystem _uiSystem;
+	UISystem* _uiSystem;
 	Piece _placeAblePieces[6];
 };
 

@@ -18,5 +18,5 @@ public:
 	Vector2d GetHexPosition(int index) const;
 	void DrawOutLineSelected() const;
 	int GetSelectedPiece() const;
-	
+	bool IsOverUi() const;
 };

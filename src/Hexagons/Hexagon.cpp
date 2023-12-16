@@ -34,8 +34,8 @@ Hexagon Hexagon::Direction(int direction)
 {
 	const Hexagon directions[6]
 	{
-		{1, 0}, {1, -1}, {0, -1},
-		{-1, 0}, {-1, 1}, {0, 1}
+		{1, 0}, {0, 1}, {-1, 1},
+		{-1, 0}, {0, -1}, {1, -1} 
 	};
 	return directions[direction];
 }

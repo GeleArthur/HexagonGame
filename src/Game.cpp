@@ -2,12 +2,16 @@
 #include <iostream>
 #include "GameEngine/GameEngine.h"
 
-// Should change :(
-Game::Game() : _world(50), _backGround()
+// Why???
+Game *Game::_gamePtr{nullptr};
+
+Game::Game() : _backGround()
 {
 	GE->SetWindowSize(1280, 720);
 	GE->SetVsync(1);
 	GE->SetTitle("Land VS Sea");
+	
+	_hexagonManager = new HexagonManager(50);
 	_camera = new CameraSystem(Rect{-GE->GetWindowWidth(),-GE->GetWindowHeight(), GE->GetWindowWidth(), GE->GetWindowHeight()});
 }
 
@@ -16,17 +20,23 @@ Game::~Game()
 	delete _camera;
 }
 
+Game* Game::GetGamePtr()
+{
+	return _gamePtr;
+}
+
 void Game::Start()
 {
-	_world.Start();
+	_hexagonManager->Start();
 	_camera->Start();
+	_gamePtr = this;
 	GE->TextureFromFile("Background.png", _backGround);
 }
 
 void Game::Update()
 {
 	_camera->UpdateCamera();
-	_world.Update();
+	_hexagonManager->Update();
 }
 
 void Game::Draw()
@@ -34,12 +44,20 @@ void Game::Draw()
 	GE->ClearBackground(0.1f,0.1f,0.1f);
 	GE->DrawTexture(_backGround, Vector2d{-GE->GetWindowWidth(), -GE->GetWindowHeight()});
 	
-	_world.Draw();
+	_hexagonManager->Draw();
 }
 
 void Game::DrawUI()
 {
-	_world.DrawUi();
-	
+	_hexagonManager->DrawUi();
 }
 
+CameraSystem* Game::GetCamera() const
+{
+	return _camera;
+}
+
+HexagonManager * Game::GetHexagonManager() const
+{
+	return _hexagonManager;
+}

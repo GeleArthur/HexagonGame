@@ -1,5 +1,7 @@
 ﻿#include "CameraSystem.h"
 
+#include "Game.h"
+
 CameraSystem::CameraSystem(const Rect& newBoundingBox): _mousePrevFrame(0,0), _boundingBox(newBoundingBox)
 {
 }
@@ -12,38 +14,53 @@ void CameraSystem::Start()
 
 void CameraSystem::UpdateCamera()
 {
-	Mouse currentMouse{GE->GetMouse()};
-	if(currentMouse.left.downThisFrame)
+	if(!Game::GetGamePtr()->GetHexagonManager()->GetUiSytem()->IsOverUi())
 	{
-		_mousePrevFrame = currentMouse.position;
-	}
-	if(currentMouse.left.holdingDown)
-	{
-		Vector2d currentPosition{GE->GetCameraPosition()};
-		const Vector2d newCameraPosition{currentPosition - (currentMouse.position - _mousePrevFrame)};
-		Vector2d realCameraPos{currentPosition};
-		
-		if(newCameraPosition.x > _boundingBox.left && newCameraPosition.x < _boundingBox.left+_boundingBox.width)
+		Mouse currentMouse{GE->GetMouse()};
+		if(currentMouse.left.downThisFrame)
 		{
-			realCameraPos.x = newCameraPosition.x;
+			_hasClicked = true;
+			_mousePrevFrame = currentMouse.position;
 		}
-		if(newCameraPosition.y > _boundingBox.top && newCameraPosition.y < _boundingBox.top+_boundingBox.height)
+		if(currentMouse.left.holdingDown)
 		{
-			realCameraPos.y = newCameraPosition.y;
-		}
+			Vector2d currentPosition{GE->GetCameraPosition()};
+			const Vector2d newCameraPosition{currentPosition - (currentMouse.position - _mousePrevFrame)};
+			Vector2d realCameraPos{currentPosition};
 		
-		if(realCameraPos != currentPosition)
-		{
-			GE->SetCameraPosition(realCameraPos);
-			GE->ApplyCamera();
-		}
+			if(newCameraPosition.x > _boundingBox.left && newCameraPosition.x < _boundingBox.left+_boundingBox.width)
+			{
+				realCameraPos.x = newCameraPosition.x;
+			}
+			if(newCameraPosition.y > _boundingBox.top && newCameraPosition.y < _boundingBox.top+_boundingBox.height)
+			{
+				realCameraPos.y = newCameraPosition.y;
+			}
 		
-		_mousePrevFrame = currentMouse.position;
+			if(realCameraPos != currentPosition)
+			{
+				_hasClicked = false;
+				GE->SetCameraPosition(realCameraPos);
+				GE->ApplyCamera();
+			}
+		
+			_mousePrevFrame = currentMouse.position;
+		}
 	}
 }
 
-void CameraSystem::DrawBoundingBox()
+void CameraSystem::DrawBoundingBox() const
 {
 	GE->SetColor(0, 1, 0);
 	GE->DrawRect(_boundingBox.left, _boundingBox.top, _boundingBox.width, _boundingBox.height);
+}
+
+bool CameraSystem::HasClicked() const
+{
+	if(GE->GetMouse().left.upThisFrame)
+	{
+		return _hasClicked;
+	}
+	
+	return false;
 }

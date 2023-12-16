@@ -88,3 +88,9 @@ int UISystem::GetSelectedPiece() const
 {
 	return _selectedPieceIndex;
 }
+
+bool UISystem::IsOverUi() const
+{
+	const Vector2d size{_layout.GetDistanceBetweenHexPointUp()};
+	return GE->GetMouse().position.y > GE->GetWindowHeight() - size.y*2;
+}

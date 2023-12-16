@@ -24,9 +24,14 @@ void Vector2d::operator-=(const Vector2d &vector)
 	y -= vector.y;
 }
 
-bool Vector2d::operator!=(const Vector2d &vector)
+bool Vector2d::operator!=(const Vector2d &vector) const
 {
 	return x != vector.x || y != vector.y;
+}
+
+bool Vector2d::operator==(const Vector2d &vector) const
+{
+	return x == vector.x || y == vector.y;
 }
 
 Vector2d & Vector2d::operator/=(float scaler)
@@ -43,32 +48,32 @@ Vector2d & Vector2d::operator*=(float scaler)
 	return *this;
 }
 
-Vector2d Vector2d::operator+(Vector2d v2)
+Vector2d Vector2d::operator+(Vector2d v2) const
 {
 	return Vector2d(x+v2.x, y+v2.y);
 }
 
-Vector2d Vector2d::operator-(Vector2d v2)
+Vector2d Vector2d::operator-(Vector2d v2) const
 {
 	return Vector2d(x-v2.x, y-v2.y);
 }
 
-Vector2d Vector2d::operator*(Vector2d v2)
+Vector2d Vector2d::operator*(Vector2d v2) const
 {
 	return Vector2d(x*v2.x, y*v2.y);
 }
 
-Vector2d Vector2d::operator/(Vector2d v2)
+Vector2d Vector2d::operator/(Vector2d v2) const
 {
 	return Vector2d(x/v2.x, y/v2.y);
 }
 
-Vector2d Vector2d::operator*(float scaler)
+Vector2d Vector2d::operator*(float scaler) const
 {
 	return Vector2d(x*scaler, y*scaler);
 }
 
-Vector2d Vector2d::operator/(float scaler)
+Vector2d Vector2d::operator/(float scaler) const
 {
 	return Vector2d(x/scaler, y/scaler);
 }

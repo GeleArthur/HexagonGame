@@ -10,15 +10,16 @@ struct Vector2d
 
     void operator +=(const Vector2d &vector);
     void operator -=(const Vector2d &vector);
-    bool operator !=(const Vector2d &vector);
+    bool operator !=(const Vector2d &vector) const;
+    bool operator ==(const Vector2d &vector) const;
 	Vector2d& operator /=(float scaler);
 	Vector2d& operator *=(float scaler);
-	Vector2d operator +(Vector2d v2);
-	Vector2d operator -(Vector2d v2);
-	Vector2d operator *(Vector2d v2);
-	Vector2d operator /(Vector2d v2);
-	Vector2d operator *(float scaler);
-	Vector2d operator /(float scaler);
+	Vector2d operator +(Vector2d v2) const;
+	Vector2d operator -(Vector2d v2) const;
+	Vector2d operator *(Vector2d v2) const;
+	Vector2d operator /(Vector2d v2) const;
+	Vector2d operator *(float scaler) const;
+	Vector2d operator /(float scaler) const;
 
 	float Length() const;
 };

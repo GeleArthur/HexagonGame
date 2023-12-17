@@ -378,6 +378,11 @@ void GameEngine::DrawRect(const Vector2d &topLeft, float width, float height, fl
 	DrawRect(topLeft.x, topLeft.y, width, height, lineWidth);
 }
 
+void GameEngine::DrawRect(Rect rect)
+{
+	DrawRect(rect.left, rect.top, rect.width, rect.height);
+}
+
 void GameEngine::FillRect(float left, float top, float width, float height)
 {
 	glBegin(GL_POLYGON);
@@ -646,7 +651,7 @@ void GameEngine::DrawTexture(const Texture &texture, const Rect &dstRect, const 
 
 	float defaultDstWidth;
 	float defaultDstHeight;
-	if (!(srcRect.width > 0.0f && srcRect.height > 0.0f)) // No srcRect specified
+	if (srcRect.width <= 0.0f && srcRect.height <= 0.0f) // No srcRect specified
 	{
 		// Use complete texture
 		textLeft = 0.0f;

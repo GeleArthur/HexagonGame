@@ -14,7 +14,7 @@ void CameraSystem::Start()
 
 void CameraSystem::UpdateCamera()
 {
-	if(!Game::GetGamePtr()->GetHexagonManager()->GetUiSytem()->IsOverUi())
+	if(!Game::GetGamePtr()->GetHexagonManager()->GetUiSystem()->IsOverUi())
 	{
 		Mouse currentMouse{GE->GetMouse()};
 		if(currentMouse.left.downThisFrame)

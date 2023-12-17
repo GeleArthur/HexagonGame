@@ -1,16 +1,18 @@
 ﻿#include "UISystem.h"
 
-UISystem::UISystem(Piece *selectAblePieces, int pieceCount, const Layout &layoutCopy):
+UISystem::UISystem(Piece *selectAblePieces, const int pieceCount, const Layout& layoutCopy, int* selectedPieceIndex):
 	_layout(layoutCopy),
 	_selectAblePieces(selectAblePieces),
-	_piecesCount(pieceCount)
+	_piecesCount(pieceCount),
+	_selectedPieceIndex(selectedPieceIndex)
 {
 	_layout.size *= 1.3;
 }
 
-void UISystem::DrawUi()
+void UISystem::DrawUi() const
 {
 	const Vector2d size{_layout.GetDistanceBetweenHexPointUp()};
+
 	
 	GE->SetColor(77.0f/255.0f, 44.0f/255.0f, 13.0f/255.0f);
 	GE->FillRect(0, GE->GetWindowHeight() - size.y*2, GE->GetWindowWidth(), size.y*2);
@@ -23,7 +25,7 @@ void UISystem::DrawUi()
 	DrawOutLineSelected();
 }
 
-void UISystem::InputCheck()
+void UISystem::InputCheck() const
 {
 	Mouse mouse = GE->GetMouse();
 
@@ -35,7 +37,7 @@ void UISystem::InputCheck()
 			float distance = (position-mouse.position).Length();
 			if(distance < _layout.size.x) // Bad code
 			{
-				_selectedPieceIndex = i;
+				*_selectedPieceIndex = i;
 				break;
 			}
 		}
@@ -71,9 +73,9 @@ Vector2d UISystem::GetHexPosition(int index) const
 
 void UISystem::DrawOutLineSelected() const
 {
-	if(_selectedPieceIndex != -1)
+	if(*_selectedPieceIndex != -1)
 	{
-		const Vector2d position = GetHexPosition(_selectedPieceIndex);
+		const Vector2d position = GetHexPosition(*_selectedPieceIndex);
 		Vector2d outline[6];
 		for (int i = 0; i < 6; i++) {
 			const Vector2d offset = _layout.HexCornerOffset(i);
@@ -82,11 +84,6 @@ void UISystem::DrawOutLineSelected() const
 		GE->SetColor(1,1,1);
 		GE->DrawPolygon(outline, 6, true, 4);
 	}
-}
-
-int UISystem::GetSelectedPiece() const
-{
-	return _selectedPieceIndex;
 }
 
 bool UISystem::IsOverUi() const

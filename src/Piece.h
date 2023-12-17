@@ -21,4 +21,7 @@ struct Piece
 		SideType::land, SideType::land, SideType::land,
 		SideType::land, SideType::land, SideType::land
 	};
+
+	int rotation{0};
+	Texture texture;
 };

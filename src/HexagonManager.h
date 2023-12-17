@@ -22,12 +22,13 @@ public:
 	void PolygonDebugPieceSide(const Hexagon &hex, int direction, Vector2d polygons[3]) const;
 	int GetInvertedDirection(int direction) const;
 	SideType GetSide(const Hexagon &hex, int direction) const;
-	UISystem* GetUiSytem();
+	UISystem* GetUiSystem();
 
 private:
 	Layout _layout;
 	std::unordered_map<Hexagon, Piece> _grid{};
 	UISystem* _uiSystem;
 	Piece _placeAblePieces[6];
+	int _selectPiece;
 };
 

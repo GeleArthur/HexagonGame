@@ -12,9 +12,10 @@ HexagonManager::HexagonManager(const int size) :
 		        /*30.0 * M_PI/180.0*/ -0.5
 	        ),
 	        Vector2d{static_cast<float>(size), static_cast<float>(size)},
-	        Vector2d{0, 0})
+	        Vector2d{0, 0}),
+	_selectPiece{-1}
 {
-	_uiSystem = new UISystem(_placeAblePieces, 6, _layout);
+	_uiSystem = new UISystem(_placeAblePieces, 6, _layout, &_selectPiece);
 	
 	for (int i{0}; i < 6; ++i)
 	{
@@ -35,30 +36,34 @@ HexagonManager::~HexagonManager()
 
 void HexagonManager::Start()
 {
-	_grid[Hexagon{0, 0}];
+	_grid[Hexagon{0, 0}] = Piece{
+		SideType::land, SideType::sea, SideType::sea,
+		SideType::sea, SideType::land, SideType::land
+	};
+	GE->TextureFromFile("hex_122211.png", _grid[Hexagon{0, 0}].texture);
 	
-	for (int repeater{1}; repeater <5; ++repeater)
-	{
-		const int scale = repeater;
-		Hexagon currentHex{Hexagon{0,0} + Hexagon::Direction(4) * scale};
-	
-		for (int direction{0}; direction < 6; ++direction)
-		{
-			for (int k{0}; k < scale; ++k)
-			{
-				_grid[currentHex.Neighbor(direction)] = Piece{
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-					GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land
-				};
-
-				currentHex = currentHex.Neighbor(direction);
-			}
-		}
-	}
+	// for (int repeater{1}; repeater <5; ++repeater)
+	// {
+	// 	const int scale = repeater;
+	// 	Hexagon currentHex{Hexagon{0,0} + Hexagon::Direction(4) * scale};
+	//
+	// 	for (int direction{0}; direction < 6; ++direction)
+	// 	{
+	// 		for (int k{0}; k < scale; ++k)
+	// 		{
+	// 			_grid[currentHex.Neighbor(direction)] = Piece{
+	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
+	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land
+	// 			};
+	//
+	// 			currentHex = currentHex.Neighbor(direction);
+	// 		}
+	// 	}
+	// }
 
 
 	for (auto& hexagon : _grid)
@@ -118,7 +123,7 @@ SideType HexagonManager::GetSide(const Hexagon &hex, int direction) const
 	return SideType::none;
 }
 
-UISystem * HexagonManager::GetUiSytem()
+UISystem * HexagonManager::GetUiSystem()
 {
 	return _uiSystem;
 }
@@ -128,15 +133,21 @@ void HexagonManager::Draw() const
 {
 	for (const auto &piece : _grid)
 	{
-		DrawDebugPiece(piece.first, piece.second);
+		Vector2d position = _layout.HexToPixel(piece.first);
+		Vector2d size = _layout.GetDistanceBetweenHexPointUp();
+		
+		GE->DrawTexture(piece.second.texture, Rect{position.x - size.x/2, position.y - _layout.size.y, size.x, _layout.size.y*2 }, Rect{0,0,0,0});
+		GE->FillEllipse(position, 10, 10);
+
+		// GE->DrawRect(Rect{position.x - size.x/2, position.y - size.x/2, size.x, size.x });
+		// DrawDebugPiece(piece.first, piece.second);
 	}
 
-	const int selectedPiece = _uiSystem->GetSelectedPiece();
-	if(selectedPiece != -1)
+	if(_selectPiece != -1)
 	{
 		const Hexagon hex = _layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
 		
-		DrawDebugPiece(hex, _placeAblePieces[selectedPiece]);
+		DrawDebugPiece(hex, _placeAblePieces[_selectPiece]);
 		
 		Vector2d outline[6];
 		_layout.PolygonCorners(hex, outline);
@@ -152,8 +163,7 @@ void HexagonManager::Update()
 
 	if(!_uiSystem->IsOverUi())
 	{
-		const int selectedPiece = _uiSystem->GetSelectedPiece();
-		if(selectedPiece != -1)
+		if(_selectPiece != -1)
 		{
 			// Is this the right way???
 			if(Game::GetGamePtr()->GetCamera()->HasClicked())
@@ -172,7 +182,7 @@ void HexagonManager::Update()
 							isConnected = true;
 
 							const int invertDir = GetInvertedDirection(dir);
-							if(_placeAblePieces[selectedPiece].sides[dir] != GetSide(neighbor, invertDir) )
+							if(_placeAblePieces[_selectPiece].sides[dir] != GetSide(neighbor, invertDir) )
 							{
 								allowedToPlace = false;
 								break;
@@ -182,7 +192,7 @@ void HexagonManager::Update()
 
 					if(isConnected && allowedToPlace)
 					{
-						PlaceHex(hex, selectedPiece);
+						PlaceHex(hex, _selectPiece);
 					}
 					else
 					{
@@ -206,7 +216,6 @@ void HexagonManager::DrawUi()
 	_uiSystem->DrawUi();
 }
 
-
 void HexagonManager::PlaceHex(Hexagon location, int pieceIndex)
 {
 	if(!_grid.count(location))
@@ -220,5 +229,8 @@ void HexagonManager::PlaceHex(Hexagon location, int pieceIndex)
 			GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
 			GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land
 		};
+
+		_selectPiece = -1;
 	}
+	
 }

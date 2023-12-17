@@ -83,6 +83,7 @@ public:
 	
 	void DrawRect(float left, float top, float width, float height, float lineWidth = 1.0f);
 	void DrawRect(const Vector2d& topLeft, float width, float height, float lineWidth = 1.0f);
+	void DrawRect(Rect rect);
 
 	void FillRect(float left, float top, float width, float height);
 	void FillRect(const Vector2d& topLeft, float width, float height);

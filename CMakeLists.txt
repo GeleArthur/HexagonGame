@@ -57,4 +57,7 @@ target_link_libraries(LandvsSea PRIVATE SDL2_mixer::SDL2_mixer)
 
 add_custom_command(TARGET LandvsSea POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_SOURCE_DIR}/Resources $<TARGET_FILE_DIR:LandvsSea>)
+                       ${CMAKE_SOURCE_DIR}/Resources 
+                       $<TARGET_FILE_DIR:LandvsSea>
+                   COMMENT "Copying resources to build directory"
+                   )

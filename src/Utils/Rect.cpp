@@ -1,6 +1,6 @@
 ﻿#include "Rect.h"
 
-Rect::Rect(): left(0), top(0), width(10), height(10)
+Rect::Rect(): left(0), top(0), width(0), height(0)
 {
 	
 }

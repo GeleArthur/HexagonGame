@@ -19,7 +19,7 @@ void UISystem::DrawUi() const
 	
 	for (int i{0}; i < _piecesCount; ++i)
 	{
-		DrawDebugPiece(GetHexPosition(i), _selectAblePieces[i]);
+		DrawPiece(GetHexPosition(i), _selectAblePieces[i]);
 	}
 	
 	DrawOutLineSelected();
@@ -62,6 +62,24 @@ void UISystem::DrawDebugPiece(Vector2d position, const Piece& piece) const
 
 		GE->FillPolygon(polygons, 3);
 	}
+}
+
+void UISystem::DrawPiece(Vector2d position, const Piece& piece) const
+{
+	const Vector2d size = _layout.GetDistanceBetweenHexPointUp();
+	
+	Matrix4x4 rotatingMatrix{Matrix4x4::IdenityMatrix()};
+	rotatingMatrix = rotatingMatrix * Matrix4x4::RotationMatrix(piece.rotation * 30 * M_PI / 180);
+	// rotatingMatrix = rotatingMatrix * GE->GetCameraMatrix(); // THIS IS COOL AS FACK HOLY SHIT
+
+	GLfloat matrix[16];
+	rotatingMatrix.openGlArray(matrix);
+	glLoadMatrixf(matrix);
+
+	GE->DrawTexture(piece.pieceTexture, Rect{position.x - size.x / 2, position.y - _layout.size.y, size.x, _layout.size.y * 2}, Rect{0, 0, 0, 0});
+
+	Matrix4x4::IdenityMatrix().openGlArray(matrix);
+	glLoadMatrixf(matrix);
 }
 
 Vector2d UISystem::GetHexPosition(int index) const

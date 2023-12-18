@@ -1,5 +1,8 @@
 #pragma once
+#include <iostream>
 #include <SDL_opengl.h>
+
+#include "Vector2d.h"
 
 
 struct Matrix4x4
@@ -23,6 +26,10 @@ struct Matrix4x4
 
 	float& operator[](int index);
 	void openGlArray(GLfloat (&array)[16]);
+	static Matrix4x4 IdenityMatrix();
+	static Matrix4x4 TranslationMatrix(Vector2d position);
+	static Matrix4x4 RotationMatrix(float rotation);
 
-	static Matrix4x4 DefaultMatrix();
+	void printMatrix(const Matrix4x4& matrix);
+	Matrix4x4 operator*(const Matrix4x4& other) const;
 };

@@ -15,6 +15,7 @@ public:
 	void DrawUi() const;
 	void InputCheck() const;
 	void DrawDebugPiece(Vector2d position, const Piece& piece) const;
+	void DrawPiece(Vector2d position, const Piece &piece) const;
 	Vector2d GetHexPosition(int index) const;
 	void DrawOutLineSelected() const;
 	bool IsOverUi() const;

@@ -17,11 +17,7 @@ public:
 	void Draw() const;
 	void Update();
 	void DrawUi();
-	void PlaceHex(Hexagon location, int pieceIndex);
-	void DrawDebugPiece(Hexagon hex, Piece piece) const;
-	void PolygonDebugPieceSide(const Hexagon &hex, int direction, Vector2d polygons[3]) const;
-	int GetInvertedDirection(int direction) const;
-	SideType GetSide(const Hexagon &hex, int direction) const;
+
 	UISystem* GetUiSystem();
 
 private:
@@ -30,5 +26,14 @@ private:
 	UISystem* _uiSystem;
 	Piece _placeAblePieces[6];
 	int _selectPiece;
+	Piece* _hexagonTextures;
+	int _hexagonTextureCount;
+
+	void PlaceHex(Hexagon location, int pieceIndex);
+	void DrawDebugPiece(Hexagon hex, Piece piece) const;
+	void PolygonDebugPieceSide(const Hexagon &hex, int direction, Vector2d polygons[3]) const;
+	int GetInvertedDirection(int direction) const;
+	SideType GetSide(const Hexagon &hex, int direction) const;
+	void DrawPiece(const Hexagon& hex, const Piece& piece) const;
 };
 

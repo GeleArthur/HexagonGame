@@ -236,7 +236,7 @@ void GameEngine::CleanUp()
 void GameEngine::DrawUi()
 {
 	GLfloat matrix[16];
-	Matrix4x4::DefaultMatrix().openGlArray(matrix);
+	Matrix4x4::IdenityMatrix().openGlArray(matrix);
 	glLoadMatrixf(matrix);
 	_game->DrawUI();
 
@@ -266,7 +266,7 @@ void GameEngine::SetCameraPosition(Vector2d newPosition)
 	_camera.m31 = -newPosition.y;
 }
 
-Vector2d GameEngine::GetCameraPosition()
+Vector2d GameEngine::GetCameraPosition() const
 {
 	return Vector2d{-_camera.m30, -_camera.m31};
 }
@@ -279,15 +279,23 @@ void GameEngine::SetCameraZoom(Vector2d newScale)
 
 void GameEngine::SetCameraRotationX(float rotation)
 {
-	_camera.m11 = cos(rotation);
-	_camera.m22 = cos(rotation);
-	_camera.m12 = -sin(rotation);
-	_camera.m21 = sin(rotation);
+	Matrix4x4 rotationMatrix{Matrix4x4::IdenityMatrix()};
+	rotationMatrix.m00 = cos(rotation);
+	rotationMatrix.m10 = -sin(rotation);
+	rotationMatrix.m01 = sin(rotation);
+	rotationMatrix.m11 = cos(rotation);
+	
+	_camera = _camera * rotationMatrix;
 }
 
 void GameEngine::EnableCameraDrag(bool isEnabled)
 {
 	_isCameraDragEnabled = isEnabled;
+}
+
+const Matrix4x4 & GameEngine::GetCameraMatrix() const
+{
+	return _camera;
 }
 
 const Mouse& GameEngine::GetMouse()

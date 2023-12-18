@@ -6,7 +6,6 @@ enum class SideType
 	none,
 	land,
 	sea,
-
 	
 	count
 };
@@ -15,6 +14,7 @@ struct Piece
 {
 	Piece();
 	Piece(SideType type1, SideType type2, SideType type3, SideType type4, SideType type5, SideType type6);
+	Piece(const std::string &texture);
 	
 	SideType sides[6]
 	{
@@ -23,5 +23,5 @@ struct Piece
 	};
 
 	int rotation{0};
-	Texture texture;
+	Texture pieceTexture;
 };

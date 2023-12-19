@@ -53,7 +53,7 @@ void HexagonManager::DrawDebugPiece(Hexagon hex, Piece piece) const
 		Vector2d polygons[3];
 		PolygonDebugPieceSide(hex, corner, polygons);
 
-		const SideType side = piece.sides[(corner + piece.rotation) % 6];
+		const SideType side = piece.sides[((corner - piece.rotation)+6) % 6];
 		if (side == SideType::land)
 			GE->SetColor(0.6941, 0.4745, 0.0901, 0.5);
 		else if (side == SideType::sea)
@@ -119,7 +119,7 @@ void HexagonManager::Draw() const
 	for (const auto &piece : _grid)
 	{
 		DrawPiece(piece.first, piece.second);
-		// DrawDebugPiece(piece.first, piece.second);
+		DrawDebugPiece(piece.first, piece.second);
 	}
 
 	if (_selectPiece != -1)
@@ -127,7 +127,7 @@ void HexagonManager::Draw() const
 		const Hexagon hex = _layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
 
 		DrawPiece(hex, _placeAblePieces[_selectPiece]);
-		// DrawDebugPiece(hex, _placeAblePieces[_selectPiece]);
+		DrawDebugPiece(hex, _placeAblePieces[_selectPiece]);
 
 		Vector2d outline[6];
 		_layout.PolygonCorners(hex, outline);
@@ -160,7 +160,8 @@ void HexagonManager::Update()
 							isConnected = true;
 
 							const int invertDir = GetInvertedDirection(dir);
-							if (_placeAblePieces[_selectPiece].sides[(dir+_placeAblePieces[_selectPiece].rotation)%6] != GetSide(neighbor, (invertDir + _grid.at(neighbor).rotation)%6))
+							
+							if (_placeAblePieces[_selectPiece].sides[((dir-_placeAblePieces[_selectPiece].rotation)+6)%6] != GetSide(neighbor, ((invertDir - _grid.at(neighbor).rotation)+6)%6))
 							{
 								allowedToPlace = false;
 								break;

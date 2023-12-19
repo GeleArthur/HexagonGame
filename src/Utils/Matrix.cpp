@@ -41,7 +41,7 @@ float & Matrix4x4::operator[](int index)
 	}
 }
 
-void Matrix4x4::openGlArray(GLfloat (&array)[16])
+void Matrix4x4::OpenGlArray(GLfloat (&array)[16])
 {
 	array[0] =  m00;
 	array[1] =  m01;
@@ -64,7 +64,7 @@ void Matrix4x4::openGlArray(GLfloat (&array)[16])
 	array[15] = m33;
 }
 
-Matrix4x4 Matrix4x4::IdenityMatrix()
+Matrix4x4 Matrix4x4::IdentityMatrix()
 {
 	return Matrix4x4{
 		1,0,0,0,
@@ -76,7 +76,7 @@ Matrix4x4 Matrix4x4::IdenityMatrix()
 
 Matrix4x4 Matrix4x4::TranslationMatrix(Vector2d position)
 {
-	Matrix4x4 result{IdenityMatrix()};
+	Matrix4x4 result{IdentityMatrix()};
 	result.m30 = position.x;
 	result.m31 = position.y;
 
@@ -85,7 +85,7 @@ Matrix4x4 Matrix4x4::TranslationMatrix(Vector2d position)
 
 Matrix4x4 Matrix4x4::RotationMatrix(float rotation)
 {
-	Matrix4x4 rotationMatrix{IdenityMatrix()};
+	Matrix4x4 rotationMatrix{IdentityMatrix()};
 	rotationMatrix.m00 = cos(rotation);
 	rotationMatrix.m10 = -sin(rotation);
 	rotationMatrix.m01 = sin(rotation);
@@ -94,7 +94,7 @@ Matrix4x4 Matrix4x4::RotationMatrix(float rotation)
 	return rotationMatrix;
 }
 
-void Matrix4x4::printMatrix(const Matrix4x4 &matrix)
+void Matrix4x4::PrintMatrix(const Matrix4x4 &matrix)
 {
 	std::cout << matrix.m00 << " " << matrix.m01 << " " << matrix.m02 << " " << matrix.m03 << std::endl;
 	std::cout << matrix.m10 << " " << matrix.m11 << " " << matrix.m12 << " " << matrix.m13 << std::endl;

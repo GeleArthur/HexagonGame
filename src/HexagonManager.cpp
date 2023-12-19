@@ -6,28 +6,30 @@
 #include "Game.h"
 
 HexagonManager::HexagonManager(const int size) :
-	_layout(Orientation(
+	m_layout(Orientation(
 		        sqrt(3.0), sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0,
 		        sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
 		        /*30.0 * M_PI/180.0*/ -0.5
 	        ),
 	        Vector2d{static_cast<float>(size), static_cast<float>(size)},
 	        Vector2d{0, 0}),
-	_selectPiece{-1}
+	m_selectPiece{-1}
 
 {
-	_uiSystem = new UISystem(_placeAblePieces, 6, _layout, &_selectPiece);
+	m_uiSystem = new UISystem(m_placeAblePieces, 6, m_layout, &m_selectPiece);
 }
 
 HexagonManager::~HexagonManager()
 {
+	delete m_uiSystem;
+	delete[] m_hexagonTextures;
 };
 
 void HexagonManager::Start()
 {
 	// Want to do automatic file loading but c++ 14 :(
-	_hexagonTextureCount = 6;
-	_hexagonTextures = new Piece[6]
+	m_hexagonTextureCount = 6;
+	m_hexagonTextures = new Piece[6]
 	{
 		Piece{"hex_122211.png"},
 		Piece{"hex_122211_1.png"},
@@ -39,11 +41,11 @@ void HexagonManager::Start()
 
 	for (int i{0}; i < 6; ++i)
 	{
-		_placeAblePieces[i] = _hexagonTextures[GE->Random(0, _hexagonTextureCount)];
+		m_placeAblePieces[i] = m_hexagonTextures[GE->Random(0, m_hexagonTextureCount)];
 	}
 	
-	_grid[Hexagon{0, 0}] = _hexagonTextures[GE->Random(0, _hexagonTextureCount)];
-	_grid[Hexagon{0, 0}].rotation = 0;
+	m_grid[Hexagon{0, 0}] = m_hexagonTextures[GE->Random(0, m_hexagonTextureCount)];
+	m_grid[Hexagon{0, 0}].rotation = 0;
 }
 
 void HexagonManager::DrawDebugPiece(Hexagon hex, Piece piece) const
@@ -66,11 +68,11 @@ void HexagonManager::DrawDebugPiece(Hexagon hex, Piece piece) const
 
 void HexagonManager::PolygonDebugPieceSide(const Hexagon &hex, int direction, Vector2d polygons[3]) const
 {
-	Vector2d center = _layout.HexToPixel(hex);
+	Vector2d center = m_layout.HexToPixel(hex);
 
-	polygons[0] = center + _layout.HexCornerOffset(direction);
+	polygons[0] = center + m_layout.HexCornerOffset(direction);
 	polygons[1] = center;
-	polygons[2] = center + _layout.HexCornerOffset(direction + 1);
+	polygons[2] = center + m_layout.HexCornerOffset(direction + 1);
 }
 
 int HexagonManager::GetInvertedDirection(int direction) const
@@ -80,9 +82,9 @@ int HexagonManager::GetInvertedDirection(int direction) const
 
 SideType HexagonManager::GetSide(const Hexagon &hex, int direction) const
 {
-	if (_grid.count(hex))
+	if (m_grid.count(hex))
 	{
-		return _grid.at(hex).sides[direction];
+		return m_grid.at(hex).sides[direction];
 	}
 
 	return SideType::none;
@@ -90,47 +92,49 @@ SideType HexagonManager::GetSide(const Hexagon &hex, int direction) const
 
 void HexagonManager::DrawPiece(const Hexagon &hex, const Piece &piece) const
 {
-	const Vector2d position = _layout.HexToPixel(hex);
-	const Vector2d size = _layout.GetDistanceBetweenHexPointUp();
+	const Vector2d position = m_layout.HexToPixel(hex);
+	const Vector2d size = m_layout.GetDistanceBetweenHexPointUp();
 	
-	Matrix4x4 rotatingMatrix{Matrix4x4::IdenityMatrix()};
+	Matrix4x4 rotatingMatrix{Matrix4x4::IdentityMatrix()};
 	rotatingMatrix = rotatingMatrix * Matrix4x4::RotationMatrix(piece.rotation * 60 * M_PI / 180);
 	rotatingMatrix = rotatingMatrix * Matrix4x4::TranslationMatrix(Vector2d{position.x /*- size.x / 2*/, position.y /*- _layout.size.y*/});
 	rotatingMatrix = rotatingMatrix * GE->GetCameraMatrix(); // THIS IS COOL AS FACK HOLY SHIT
 
 	GLfloat matrix[16];
-	rotatingMatrix.openGlArray(matrix);
+	rotatingMatrix.OpenGlArray(matrix);
 	glLoadMatrixf(matrix);
 	
-	GE->DrawTexture(piece.pieceTexture, Rect{-size.x/2, -_layout.size.y, size.x, _layout.size.y * 2}, Rect{0, 0, 0, 0});
+	GE->DrawTexture(piece.pieceTexture, Rect{-size.x/2, -m_layout.size.y, size.x, m_layout.size.y * 2}, Rect{0, 0, 0, 0});
 	// GE->FillEllipse(Vector2d(0,0), 10, 10);
 
+	
+	
 	GE->ApplyCamera();
 }
 
 UISystem* HexagonManager::GetUiSystem()
 {
-	return _uiSystem;
+	return m_uiSystem;
 }
 
 
 void HexagonManager::Draw() const
 {
-	for (const auto &piece : _grid)
+	for (const auto &piece : m_grid)
 	{
 		DrawPiece(piece.first, piece.second);
 		// DrawDebugPiece(piece.first, piece.second);
 	}
 
-	if (_selectPiece != -1)
+	if (m_selectPiece != -1)
 	{
-		const Hexagon hex = _layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
+		const Hexagon hex = m_layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
 
-		DrawPiece(hex, _placeAblePieces[_selectPiece]);
+		DrawPiece(hex, m_placeAblePieces[m_selectPiece]);
 		// DrawDebugPiece(hex, _placeAblePieces[_selectPiece]);
 
 		Vector2d outline[6];
-		_layout.PolygonCorners(hex, outline);
+		m_layout.PolygonCorners(hex, outline);
 		GE->SetColor(1, 1, 1);
 		GE->DrawPolygon(outline, 6);
 	}
@@ -138,30 +142,30 @@ void HexagonManager::Draw() const
 
 void HexagonManager::Update()
 {
-	_uiSystem->InputCheck();
+	m_uiSystem->InputCheck();
 
-	if (!_uiSystem->IsOverUi())
+	if (!m_uiSystem->IsOverUi())
 	{
-		if (_selectPiece != -1)
+		if (m_selectPiece != -1)
 		{
 			// Is this the right way???
 			if (Game::GetGame()->GetCamera()->HasClicked())
 			{
-				const Hexagon hex = _layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
-				if (!_grid.count(hex))
+				const Hexagon hex = m_layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
+				if (!m_grid.count(hex))
 				{
 					bool isConnected{false};
 					bool allowedToPlace{true};
 					for (int dir{0}; dir < 6; ++dir)
 					{
 						Hexagon neighbor = hex.Neighbor(dir);
-						if (_grid.count(neighbor))
+						if (m_grid.count(neighbor))
 						{
 							isConnected = true;
 
 							const int invertDir = GetInvertedDirection(dir);
 							
-							if (_placeAblePieces[_selectPiece].sides[((dir-_placeAblePieces[_selectPiece].rotation)+6)%6] != GetSide(neighbor, ((invertDir - _grid.at(neighbor).rotation)+6)%6))
+							if (m_placeAblePieces[m_selectPiece].sides[((dir-m_placeAblePieces[m_selectPiece].rotation)+6)%6] != GetSide(neighbor, ((invertDir - m_grid.at(neighbor).rotation)+6)%6))
 							{
 								allowedToPlace = false;
 								break;
@@ -171,7 +175,7 @@ void HexagonManager::Update()
 
 					if (isConnected && allowedToPlace)
 					{
-						PlaceHex(hex, _selectPiece);
+						PlaceHex(hex, m_selectPiece);
 					}
 					else
 					{
@@ -191,15 +195,15 @@ void HexagonManager::Update()
 
 void HexagonManager::DrawUi()
 {
-	_uiSystem->DrawUi();
+	m_uiSystem->DrawUi();
 }
 
 void HexagonManager::PlaceHex(Hexagon location, int pieceIndex)
 {
-	if (!_grid.count(location))
+	if (!m_grid.count(location))
 	{
-		_grid[location] = _placeAblePieces[pieceIndex];
-		_placeAblePieces[pieceIndex] = _hexagonTextures[GE->Random(0, _hexagonTextureCount)];
-		_selectPiece = -1;
+		m_grid[location] = m_placeAblePieces[pieceIndex];
+		m_placeAblePieces[pieceIndex] = m_hexagonTextures[GE->Random(0, m_hexagonTextureCount)];
+		m_selectPiece = -1;
 	}
 }

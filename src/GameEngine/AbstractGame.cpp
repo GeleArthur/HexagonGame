@@ -18,6 +18,6 @@ void AbstractGame::Draw()
 {
 }
 
-void AbstractGame::DrawUI()
+void AbstractGame::DrawUi()
 {
 }

@@ -8,11 +8,11 @@
 #include <utility>
 #include <GL/glu.h>
 
-GameEngine *GameEngine::_gameEngineSingleton{nullptr};
+GameEngine *GameEngine::m_gameEngineSingleton{nullptr};
 
 void GameEngine::Error(std::string message)
 {
-	_quitting = true;
+	m_quitting = true;
 	std::cout << "Error: " << message << '\n';
 	throw;
 	exit(-1);
@@ -23,54 +23,54 @@ void GameEngine::CameraDragUpdate()
 	Mouse currentMouse{GE->GetMouse()};
 	if(currentMouse.left.downThisFrame)
 	{
-		_mousePrevFrame = currentMouse.position;
+		m_mousePrevFrame = currentMouse.position;
 	}
 	if(currentMouse.left.holdingDown)
 	{
 		Vector2d currentPosition{GE->GetCameraPosition()};
-		currentPosition -= currentMouse.position - _mousePrevFrame;
+		currentPosition -= currentMouse.position - m_mousePrevFrame;
 		GE->SetCameraPosition(currentPosition);
 		GE->ApplyCamera();
 
-		_mousePrevFrame = currentMouse.position;
+		m_mousePrevFrame = currentMouse.position;
 	}
 }
 
-GameEngine::GameEngine(): _quitting(false)
+GameEngine::GameEngine(): m_quitting(false)
 {
-	_gameEngineSingleton = this;
+	m_gameEngineSingleton = this;
 }
 
 GameEngine::~GameEngine()
 {
-	delete _game;
+	delete m_game;
 }
 
 GameEngine* GameEngine::GetSingleton()
 {
-	if (_gameEngineSingleton == nullptr) _gameEngineSingleton = new GameEngine();
-	return _gameEngineSingleton;
+	if (m_gameEngineSingleton == nullptr) m_gameEngineSingleton = new GameEngine();
+	return m_gameEngineSingleton;
 }
 
 void GameEngine::SetGame(AbstractGame *game)
 {
-	_game = game;
+	m_game = game;
 }
 
 void GameEngine::SetWindowSize(const int width, const int height)
 {
-	_windowWidth = width;
-	_windowHeight = height;
+	m_windowWidth = width;
+	m_windowHeight = height;
 
-	if (_window != nullptr)
+	if (m_window != nullptr)
 	{
-		SDL_SetWindowSize(_window, _windowWidth, _windowHeight);
+		SDL_SetWindowSize(m_window, m_windowWidth, m_windowHeight);
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
-		gluOrtho2D(0, _windowWidth, _windowHeight, 0);
-		glViewport(0, 0, _windowWidth, _windowHeight);
+		gluOrtho2D(0, m_windowWidth, m_windowHeight, 0);
+		glViewport(0, 0, m_windowWidth, m_windowHeight);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -79,60 +79,60 @@ void GameEngine::SetWindowSize(const int width, const int height)
 
 float GameEngine::GetWindowWidth()
 {
-	return static_cast<float>(_windowWidth);
+	return static_cast<float>(m_windowWidth);
 }
 
 float GameEngine::GetWindowHeight()
 {
-	return static_cast<float>(_windowHeight);
+	return static_cast<float>(m_windowHeight);
 }
 
 void GameEngine::SetTitle(std::string newName)
 {
-	_windowTitle = std::move(newName);
-	if (_window != nullptr)
+	m_windowTitle = std::move(newName);
+	if (m_window != nullptr)
 	{
-		SDL_SetWindowTitle(_window, _windowTitle.c_str());
+		SDL_SetWindowTitle(m_window, m_windowTitle.c_str());
 	}
 }
 
 void GameEngine::SetVsync(int setting)
 {
-	_windowVsyncMode = setting;
-	if (_window != nullptr)
+	m_windowVsyncMode = setting;
+	if (m_window != nullptr)
 	{
-		if (SDL_GL_SetSwapInterval(_windowVsyncMode) < 0) Error(SDL_GetError());
+		if (SDL_GL_SetSwapInterval(m_windowVsyncMode) < 0) Error(SDL_GetError());
 	}
 }
 
 void GameEngine::Initialize()
 {
-	if (_game == nullptr) Error("Use SetGame() before Initialize");
+	if (m_game == nullptr) Error("Use SetGame() before Initialize");
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) Error(SDL_GetError());
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
-	_window = SDL_CreateWindow(
-		_windowTitle.c_str(),
+	m_window = SDL_CreateWindow(
+		m_windowTitle.c_str(),
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		_windowWidth,
-		_windowHeight,
+		m_windowWidth,
+		m_windowHeight,
 		SDL_WINDOW_OPENGL);
 
-	if (_window == nullptr) Error(SDL_GetError());
+	if (m_window == nullptr) Error(SDL_GetError());
 
-	_context = SDL_GL_CreateContext(_window);
-	if (_context == nullptr) Error(SDL_GetError());
+	m_context = SDL_GL_CreateContext(m_window);
+	if (m_context == nullptr) Error(SDL_GetError());
 
-	SetVsync(_windowVsyncMode);
+	SetVsync(m_windowVsyncMode);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluOrtho2D(0, _windowWidth, _windowHeight, 0);
-	glViewport(0, 0, _windowWidth, _windowHeight);
+	gluOrtho2D(0, m_windowWidth, m_windowHeight, 0);
+	glViewport(0, 0, m_windowWidth, m_windowHeight);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -140,7 +140,7 @@ void GameEngine::Initialize()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	_keyBoardState = SDL_GetKeyboardState(nullptr);
+	m_keyBoardState = SDL_GetKeyboardState(nullptr);
 
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) Error(IMG_GetError());
 	if (TTF_Init() == -1) Error(TTF_GetError());
@@ -149,88 +149,88 @@ void GameEngine::Initialize()
 void GameEngine::Run()
 {
 	SDL_Event e{};
-	_game->Start();
+	m_game->Start();
 
 	const std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	std::chrono::steady_clock::time_point prevTime = std::chrono::steady_clock::now();
 
-	while (!_quitting)
+	while (!m_quitting)
 	{
-		_mouse.left.downThisFrame = false;
-		_mouse.left.upThisFrame = false;
-		_mouse.right.downThisFrame = false;
-		_mouse.right.upThisFrame = false;
-		_mouse.wheel.y = 0;
-		_mouse.wheel.x = 0;
+		m_mouse.left.downThisFrame = false;
+		m_mouse.left.upThisFrame = false;
+		m_mouse.right.downThisFrame = false;
+		m_mouse.right.upThisFrame = false;
+		m_mouse.wheel.y = 0;
+		m_mouse.wheel.x = 0;
 
 		while (SDL_PollEvent(&e) != 0)
 		{
 			switch (e.type)
 			{
 			case SDL_QUIT:
-				_quitting = true;
+				m_quitting = true;
 				break;
 			case SDL_MOUSEMOTION:
-				_mouse.position = Vector2d{static_cast<float>(e.motion.x), static_cast<float>(e.motion.y)};
+				m_mouse.position = Vector2d{static_cast<float>(e.motion.x), static_cast<float>(e.motion.y)};
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				// if(e.button.state)
 				if(e.button.button == '\x1')
 				{
-					_mouse.left.holdingDown = true;
-					_mouse.left.downThisFrame = true;
+					m_mouse.left.holdingDown = true;
+					m_mouse.left.downThisFrame = true;
 				}
 				if(e.button.button == '\x3')
 				{
-					_mouse.right.holdingDown = true;
-					_mouse.right.downThisFrame = true;
+					m_mouse.right.holdingDown = true;
+					m_mouse.right.downThisFrame = true;
 				}
 
 				break;
 			case SDL_MOUSEBUTTONUP:
 				if(e.button.button == '\x1')
 				{
-					_mouse.left.holdingDown = false;
-					_mouse.left.upThisFrame = true;
+					m_mouse.left.holdingDown = false;
+					m_mouse.left.upThisFrame = true;
 				}
 				if(e.button.button == '\x3')
 				{
-					_mouse.right.holdingDown = false;
-					_mouse.right.upThisFrame = true;
+					m_mouse.right.holdingDown = false;
+					m_mouse.right.upThisFrame = true;
 				}
 				break;
 			case SDL_MOUSEWHEEL:
-				_mouse.wheel = Vector2d{float(e.wheel.preciseX), float(e.wheel.preciseY)};
+				m_mouse.wheel = Vector2d{float(e.wheel.preciseX), float(e.wheel.preciseY)};
 				break;
 			default:
 				break;
 			}
 		}
 
-		if (!_quitting)
+		if (!m_quitting)
 		{
 			std::chrono::steady_clock::time_point timeNow = std::chrono::steady_clock::now();
-			_currentTime = std::chrono::duration<float>(timeNow - startTime).count();
-			_deltaTime = std::chrono::duration<float>(timeNow - prevTime).count();
+			m_currentTime = std::chrono::duration<float>(timeNow - startTime).count();
+			m_deltaTime = std::chrono::duration<float>(timeNow - prevTime).count();
 			prevTime = timeNow;
 
-			if(_isCameraDragEnabled)
+			if(m_isCameraDragEnabled)
 				CameraDragUpdate();
-			_game->Update();
-			_game->Draw();
+			m_game->Update();
+			m_game->Draw();
 			DrawUi();
 
-			SDL_GL_SwapWindow(_window);
+			SDL_GL_SwapWindow(m_window);
 		}
 	}
 }
 
 void GameEngine::CleanUp()
 {
-	SDL_GL_DeleteContext(_context);
+	SDL_GL_DeleteContext(m_context);
 
-	SDL_DestroyWindow(_window);
-	_window = nullptr;
+	SDL_DestroyWindow(m_window);
+	m_window = nullptr;
 
 	TTF_Quit();
 	IMG_Quit();
@@ -241,76 +241,76 @@ void GameEngine::CleanUp()
 void GameEngine::DrawUi()
 {
 	GLfloat matrix[16];
-	Matrix4x4::IdenityMatrix().openGlArray(matrix);
+	Matrix4x4::IdentityMatrix().OpenGlArray(matrix);
 	glLoadMatrixf(matrix);
-	_game->DrawUI();
+	m_game->DrawUi();
 
 	ApplyCamera();
 }
 
 float GameEngine::GetDeltaTime()
 {
-	return _deltaTime;
+	return m_deltaTime;
 }
 
 float GameEngine::GetCurrentTimer()
 {
-	return _currentTime;
+	return m_currentTime;
 }
 
 void GameEngine::ApplyCamera()
 {
 	GLfloat matrix[16];
-	_camera.openGlArray(matrix);
+	m_camera.OpenGlArray(matrix);
 	glLoadMatrixf(matrix);
 }
 
 void GameEngine::SetCameraPosition(Vector2d newPosition)
 {
-	_camera.m30 = -newPosition.x;
-	_camera.m31 = -newPosition.y;
+	m_camera.m30 = -newPosition.x;
+	m_camera.m31 = -newPosition.y;
 }
 
 Vector2d GameEngine::GetCameraPosition() const
 {
-	return Vector2d{-_camera.m30, -_camera.m31};
+	return Vector2d{-m_camera.m30, -m_camera.m31};
 }
 
 void GameEngine::SetCameraZoom(Vector2d newScale)
 {
-	_camera.m00 = newScale.x;
-	_camera.m11 = newScale.y;
+	m_camera.m00 = newScale.x;
+	m_camera.m11 = newScale.y;
 }
 
 void GameEngine::SetCameraRotationX(float rotation)
 {
-	Matrix4x4 rotationMatrix{Matrix4x4::IdenityMatrix()};
+	Matrix4x4 rotationMatrix{Matrix4x4::IdentityMatrix()};
 	rotationMatrix.m00 = cos(rotation);
 	rotationMatrix.m10 = -sin(rotation);
 	rotationMatrix.m01 = sin(rotation);
 	rotationMatrix.m11 = cos(rotation);
 	
-	_camera = _camera * rotationMatrix;
+	m_camera = m_camera * rotationMatrix;
 }
 
 void GameEngine::EnableCameraDrag(bool isEnabled)
 {
-	_isCameraDragEnabled = isEnabled;
+	m_isCameraDragEnabled = isEnabled;
 }
 
 const Matrix4x4 & GameEngine::GetCameraMatrix() const
 {
-	return _camera;
+	return m_camera;
 }
 
 const Mouse& GameEngine::GetMouse()
 {
-	return _mouse;
+	return m_mouse;
 }
 
 const Uint8* GameEngine::GetKeyBoardState()
 {
-	return _keyBoardState;
+	return m_keyBoardState;
 }
 
 float GameEngine::Random(float min, float max)

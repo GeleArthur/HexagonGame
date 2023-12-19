@@ -6,10 +6,10 @@
 class Game : public AbstractGame
 {
 private:
-    HexagonManager* _hexagonManager;
-    CameraSystem* _camera;
-    Texture _backGround;
-    static Game *_gamePtr;
+    HexagonManager* m_hexagonManager;
+    CameraSystem* m_camera;
+    Texture m_backGround;
+    static Game *m_gamePtr;
 
     
 public:
@@ -21,7 +21,7 @@ public:
     void Start() override;
     void Update() override;
     void Draw() override;
-    void DrawUI() override;
+    void DrawUi() override;
 
     CameraSystem* GetCamera() const;
     HexagonManager* GetHexagonManager() const;

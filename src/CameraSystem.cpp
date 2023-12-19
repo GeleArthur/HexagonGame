@@ -2,7 +2,7 @@
 
 #include "Game.h"
 
-CameraSystem::CameraSystem(const Rect& newBoundingBox): _mousePrevFrame(0,0), _boundingBox(newBoundingBox)
+CameraSystem::CameraSystem(const Rect& newBoundingBox): m_mousePrevFrame(0,0), m_boundingBox(newBoundingBox)
 {
 }
 
@@ -19,32 +19,32 @@ void CameraSystem::UpdateCamera()
 		Mouse currentMouse{GE->GetMouse()};
 		if(currentMouse.left.downThisFrame)
 		{
-			_hasClicked = true;
-			_mousePrevFrame = currentMouse.position;
+			m_hasClicked = true;
+			m_mousePrevFrame = currentMouse.position;
 		}
 		if(currentMouse.left.holdingDown)
 		{
 			Vector2d currentPosition{GE->GetCameraPosition()};
-			const Vector2d newCameraPosition{currentPosition - (currentMouse.position - _mousePrevFrame)};
+			const Vector2d newCameraPosition{currentPosition - (currentMouse.position - m_mousePrevFrame)};
 			Vector2d realCameraPos{currentPosition};
 		
-			if(newCameraPosition.x > _boundingBox.left && newCameraPosition.x < _boundingBox.left+_boundingBox.width)
+			if(newCameraPosition.x > m_boundingBox.left && newCameraPosition.x < m_boundingBox.left+m_boundingBox.width)
 			{
 				realCameraPos.x = newCameraPosition.x;
 			}
-			if(newCameraPosition.y > _boundingBox.top && newCameraPosition.y < _boundingBox.top+_boundingBox.height)
+			if(newCameraPosition.y > m_boundingBox.top && newCameraPosition.y < m_boundingBox.top+m_boundingBox.height)
 			{
 				realCameraPos.y = newCameraPosition.y;
 			}
 		
 			if(realCameraPos != currentPosition)
 			{
-				_hasClicked = false;
+				m_hasClicked = false;
 				GE->SetCameraPosition(realCameraPos);
 				GE->ApplyCamera();
 			}
 		
-			_mousePrevFrame = currentMouse.position;
+			m_mousePrevFrame = currentMouse.position;
 		}
 	}
 }
@@ -52,14 +52,14 @@ void CameraSystem::UpdateCamera()
 void CameraSystem::DrawBoundingBox() const
 {
 	GE->SetColor(0, 1, 0);
-	GE->DrawRect(_boundingBox.left, _boundingBox.top, _boundingBox.width, _boundingBox.height);
+	GE->DrawRect(m_boundingBox.left, m_boundingBox.top, m_boundingBox.width, m_boundingBox.height);
 }
 
 bool CameraSystem::HasClicked() const
 {
 	if(GE->GetMouse().left.upThisFrame)
 	{
-		return _hasClicked;
+		return m_hasClicked;
 	}
 	
 	return false;

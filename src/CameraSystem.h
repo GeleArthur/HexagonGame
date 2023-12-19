@@ -5,9 +5,9 @@
 class CameraSystem
 {
 private:
-	Vector2d _mousePrevFrame;
-	Rect _boundingBox;
-	bool _hasClicked;
+	Vector2d m_mousePrevFrame;
+	Rect m_boundingBox;
+	bool m_hasClicked;
 	
 public:
 	CameraSystem(const Rect& newBoundingBox);

@@ -6,8 +6,8 @@
 
 class Hexagon
 {
-	int q;
-	int r;
+	int m_q;
+	int m_r;
 
 public:
 	Hexagon(int q, int r);
@@ -29,12 +29,9 @@ public:
 	bool operator==(Hexagon other) const;
 };
 
-namespace std
+template<>
+struct std::hash<Hexagon>
 {
-	template<>
-	struct hash<Hexagon>
-	{
-		size_t operator()(const Hexagon& other) const noexcept;
-	};
-}
+	size_t operator()(const Hexagon& other) const noexcept;
+};
 

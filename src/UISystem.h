@@ -5,10 +5,10 @@
 
 class UISystem
 {
-	Layout _layout;
-	Piece* _selectAblePieces;
-	int _piecesCount{};
-	int* _selectedPieceIndex;
+	Layout m_layout;
+	Piece* m_selectAblePieces;
+	int m_piecesCount{};
+	int* m_selectedPieceIndex;
 	
 public:
 	UISystem(Piece* selectAblePieces, int pieceCount, const Layout& layoutCopy, int* selectedPieceIndex);

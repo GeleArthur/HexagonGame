@@ -19,6 +19,8 @@ int main(int argc, char* args[])
 	engine->Run();
 	engine->CleanUp();
 
+	delete engine;
+
 	return 0;
 }
 

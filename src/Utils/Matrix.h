@@ -25,11 +25,11 @@ struct Matrix4x4
 	float m33;
 
 	float& operator[](int index);
-	void openGlArray(GLfloat (&array)[16]);
-	static Matrix4x4 IdenityMatrix();
+	void OpenGlArray(GLfloat (&array)[16]);
+	static Matrix4x4 IdentityMatrix();
 	static Matrix4x4 TranslationMatrix(Vector2d position);
 	static Matrix4x4 RotationMatrix(float rotation);
 
-	void printMatrix(const Matrix4x4& matrix);
+	void PrintMatrix(const Matrix4x4& matrix);
 	Matrix4x4 operator*(const Matrix4x4& other) const;
 };

@@ -15,27 +15,27 @@
 
 class GameEngine
 {
-	bool _quitting;
-	SDL_Window *_window{};
-	AbstractGame *_game{};
-	SDL_GLContext _context{};
-	static GameEngine *_gameEngineSingleton;
+	bool m_quitting;
+	SDL_Window *m_window{};
+	AbstractGame *m_game{};
+	SDL_GLContext m_context{};
+	static GameEngine *m_gameEngineSingleton;
 	
-	float _deltaTime;
-	float _currentTime;
-	Mouse _mouse{};
-	Matrix4x4 _camera{Matrix4x4::IdenityMatrix()};
-	bool _isCameraDragEnabled{};
+	float m_deltaTime;
+	float m_currentTime;
+	Mouse m_mouse{};
+	Matrix4x4 m_camera{Matrix4x4::IdentityMatrix()};
+	bool m_isCameraDragEnabled{};
 
-	std::string _windowTitle{"GAME!!!"};
-	int _windowWidth{400};
-	int _windowHeight{400};
-	int _windowVsyncMode{1};
-	const Uint8* _keyBoardState{};
+	std::string m_windowTitle{"GAME!!!"};
+	int m_windowWidth{400};
+	int m_windowHeight{400};
+	int m_windowVsyncMode{1};
+	const Uint8* m_keyBoardState{};
 
 	void Error(std::string message);
 
-	Vector2d _mousePrevFrame;
+	Vector2d m_mousePrevFrame;
 	void CameraDragUpdate();
 
 public:

@@ -3,61 +3,62 @@
 #include "GameEngine/GameEngine.h"
 
 // Why???
-Game *Game::_gamePtr{nullptr};
+Game *Game::m_gamePtr{nullptr};
 
-Game::Game() : _backGround()
+Game::Game() : m_backGround()
 {
 	GE->SetWindowSize(1280, 720);
 	GE->SetVsync(1);
 	GE->SetTitle("Land VS Sea");
 	
-	_hexagonManager = new HexagonManager(50);
-	_camera = new CameraSystem(Rect{-GE->GetWindowWidth(),-GE->GetWindowHeight(), GE->GetWindowWidth(), GE->GetWindowHeight()});
+	m_hexagonManager = new HexagonManager(50);
+	m_camera = new CameraSystem(Rect{-GE->GetWindowWidth(),-GE->GetWindowHeight(), GE->GetWindowWidth(), GE->GetWindowHeight()});
 }
 
 Game::~Game()
 {
-	delete _camera;
+	delete m_camera;
+	delete m_hexagonManager;
 }
 
 Game* Game::GetGame()
 {
-	return _gamePtr;
+	return m_gamePtr;
 }
 
 void Game::Start()
 {
-	_hexagonManager->Start();
-	_camera->Start();
-	_gamePtr = this;
-	GE->TextureFromFile("Background.png", _backGround);
+	m_hexagonManager->Start();
+	m_camera->Start();
+	m_gamePtr = this;
+	GE->TextureFromFile("Background.png", m_backGround);
 }
 
 void Game::Update()
 {
-	_camera->UpdateCamera();
-	_hexagonManager->Update();
+	m_camera->UpdateCamera();
+	m_hexagonManager->Update();
 }
 
 void Game::Draw()
 {
 	GE->ClearBackground(0.1f,0.1f,0.1f);
-	GE->DrawTexture(_backGround, Vector2d{-GE->GetWindowWidth(), -GE->GetWindowHeight()});
+	GE->DrawTexture(m_backGround, Vector2d{-GE->GetWindowWidth(), -GE->GetWindowHeight()});
 	
-	_hexagonManager->Draw();
+	m_hexagonManager->Draw();
 }
 
-void Game::DrawUI()
+void Game::DrawUi()
 {
-	_hexagonManager->DrawUi();
+	m_hexagonManager->DrawUi();
 }
 
 CameraSystem* Game::GetCamera() const
 {
-	return _camera;
+	return m_camera;
 }
 
 HexagonManager * Game::GetHexagonManager() const
 {
-	return _hexagonManager;
+	return m_hexagonManager;
 }

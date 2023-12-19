@@ -21,13 +21,13 @@ public:
 	UISystem* GetUiSystem();
 
 private:
-	Layout _layout;
-	std::unordered_map<Hexagon, Piece> _grid{};
-	UISystem* _uiSystem;
-	Piece _placeAblePieces[6];
-	int _selectPiece;
-	Piece* _hexagonTextures;
-	int _hexagonTextureCount;
+	Layout m_layout;
+	std::unordered_map<Hexagon, Piece> m_grid{};
+	UISystem* m_uiSystem;
+	Piece m_placeAblePieces[6];
+	int m_selectPiece;
+	Piece* m_hexagonTextures;
+	int m_hexagonTextureCount;
 
 	void PlaceHex(Hexagon location, int pieceIndex);
 	void DrawDebugPiece(Hexagon hex, Piece piece) const;

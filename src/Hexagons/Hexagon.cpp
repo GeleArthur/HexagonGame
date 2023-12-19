@@ -1,27 +1,27 @@
 ﻿#include "Hexagon.h"
 
-Hexagon::Hexagon(int q, int r) : q(q), r(r)
+Hexagon::Hexagon(int q, int r) : m_q(q), m_r(r)
 {
 }
 
-Hexagon::Hexagon(): q(0), r(0)
+Hexagon::Hexagon(): m_q(0), m_r(0)
 {
 }
 
 void Hexagon::Set(const int q, const int r)
 {
-	this->q = q;
-	this->r = r;
+	this->m_q = q;
+	this->m_r = r;
 }
 
 int Hexagon::GetS() const
 {
-	return -r-q;
+	return -m_r-m_q;
 }
 
 int Hexagon::GetLength() const
 {
-	return (abs(q) + abs(r) + abs(GetS()))/2;
+	return (abs(m_q) + abs(m_r) + abs(GetS()))/2;
 }
 
 int Hexagon::GetDistance(const Hexagon other) const
@@ -47,22 +47,22 @@ Hexagon Hexagon::Neighbor(int direction) const
 
 Hexagon Hexagon::operator+(const Hexagon other) const
 {
-	return Hexagon{q + other.q, r+other.r};
+	return Hexagon{m_q + other.m_q, m_r+other.m_r};
 }
 
 Hexagon Hexagon::operator-(const Hexagon other) const
 {
-	return Hexagon{q - other.q, r-other.r};
+	return Hexagon{m_q - other.m_q, m_r-other.m_r};
 }
 
 Hexagon Hexagon::operator*(int scaler) const
 {
-	return Hexagon{q * scaler, r * scaler};
+	return Hexagon{m_q * scaler, m_r * scaler};
 }
 
 bool Hexagon::operator==(Hexagon other) const
 {
-	return q == other.q && r == other.r;
+	return m_q == other.m_q && m_r == other.m_r;
 }
 
 size_t std::hash<Hexagon>::operator()(const Hexagon &other) const noexcept
@@ -74,10 +74,10 @@ size_t std::hash<Hexagon>::operator()(const Hexagon &other) const noexcept
 
 int Hexagon::GetQ() const
 {
-	return q;
+	return m_q;
 }
 
 int Hexagon::GetR() const
 {
-	return r;
+	return m_r;
 }

@@ -12,8 +12,10 @@ struct MouseButton
 struct Mouse
 {
 	Vector2d position;
+	Vector2d wheel;
 	
 	MouseButton left;
 	MouseButton right;
+	
 };
 

@@ -44,42 +44,6 @@ void HexagonManager::Start()
 	
 	_grid[Hexagon{0, 0}] = _hexagonTextures[GE->Random(0, _hexagonTextureCount)];
 	_grid[Hexagon{0, 0}].rotation = 0;
-	// for (int repeater{1}; repeater <5; ++repeater)
-	// {
-	// 	const int scale = repeater;
-	// 	Hexagon currentHex{Hexagon{0,0} + Hexagon::Direction(4) * scale};
-	//
-	// 	for (int direction{0}; direction < 6; ++direction)
-	// 	{
-	// 		for (int k{0}; k < scale; ++k)
-	// 		{
-	// 			_grid[currentHex.Neighbor(direction)] = Piece{
-	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land,
-	// 				GE->Random(0.0f,1.0f) > 0.5f ? SideType::sea: SideType::land
-	// 			};
-	//
-	// 			currentHex = currentHex.Neighbor(direction);
-	// 		}
-	// 	}
-	// }
-
-
-	for (auto &hexagon : _grid)
-	{
-		for (int dir{0}; dir < 6; ++dir)
-		{
-			Hexagon neighbor = hexagon.first.Neighbor(dir);
-			if (_grid.count(neighbor))
-			{
-				const int invertedDir = GetInvertedDirection(dir);
-				hexagon.second.sides[dir] = GetSide(neighbor, invertedDir);
-			}
-		}
-	}
 }
 
 void HexagonManager::DrawDebugPiece(Hexagon hex, Piece piece) const
@@ -89,7 +53,7 @@ void HexagonManager::DrawDebugPiece(Hexagon hex, Piece piece) const
 		Vector2d polygons[3];
 		PolygonDebugPieceSide(hex, corner, polygons);
 
-		const SideType side = piece.sides[corner];
+		const SideType side = piece.sides[(corner + piece.rotation) % 6];
 		if (side == SideType::land)
 			GE->SetColor(0.6941, 0.4745, 0.0901, 0.5);
 		else if (side == SideType::sea)
@@ -130,15 +94,16 @@ void HexagonManager::DrawPiece(const Hexagon &hex, const Piece &piece) const
 	const Vector2d size = _layout.GetDistanceBetweenHexPointUp();
 	
 	Matrix4x4 rotatingMatrix{Matrix4x4::IdenityMatrix()};
-	rotatingMatrix = rotatingMatrix * Matrix4x4::RotationMatrix(piece.rotation * 30 * M_PI / 180);
+	rotatingMatrix = rotatingMatrix * Matrix4x4::RotationMatrix(piece.rotation * 60 * M_PI / 180);
+	rotatingMatrix = rotatingMatrix * Matrix4x4::TranslationMatrix(Vector2d{position.x /*- size.x / 2*/, position.y /*- _layout.size.y*/});
 	rotatingMatrix = rotatingMatrix * GE->GetCameraMatrix(); // THIS IS COOL AS FACK HOLY SHIT
 
 	GLfloat matrix[16];
 	rotatingMatrix.openGlArray(matrix);
 	glLoadMatrixf(matrix);
-
-	GE->DrawTexture(piece.pieceTexture, Rect{position.x - size.x / 2, position.y - _layout.size.y, size.x, _layout.size.y * 2}, Rect{0, 0, 0, 0});
-	GE->FillEllipse(position, 10, 10);
+	
+	GE->DrawTexture(piece.pieceTexture, Rect{-size.x/2, -_layout.size.y, size.x, _layout.size.y * 2}, Rect{0, 0, 0, 0});
+	// GE->FillEllipse(Vector2d(0,0), 10, 10);
 
 	GE->ApplyCamera();
 }
@@ -154,7 +119,7 @@ void HexagonManager::Draw() const
 	for (const auto &piece : _grid)
 	{
 		DrawPiece(piece.first, piece.second);
-		DrawDebugPiece(piece.first, piece.second);
+		// DrawDebugPiece(piece.first, piece.second);
 	}
 
 	if (_selectPiece != -1)
@@ -162,6 +127,7 @@ void HexagonManager::Draw() const
 		const Hexagon hex = _layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
 
 		DrawPiece(hex, _placeAblePieces[_selectPiece]);
+		// DrawDebugPiece(hex, _placeAblePieces[_selectPiece]);
 
 		Vector2d outline[6];
 		_layout.PolygonCorners(hex, outline);
@@ -179,11 +145,9 @@ void HexagonManager::Update()
 		if (_selectPiece != -1)
 		{
 			// Is this the right way???
-			if (Game::GetGamePtr()->GetCamera()->HasClicked())
+			if (Game::GetGame()->GetCamera()->HasClicked())
 			{
 				const Hexagon hex = _layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
-				
-				
 				if (!_grid.count(hex))
 				{
 					bool isConnected{false};
@@ -196,7 +160,7 @@ void HexagonManager::Update()
 							isConnected = true;
 
 							const int invertDir = GetInvertedDirection(dir);
-							if (_placeAblePieces[_selectPiece].sides[dir] != GetSide(neighbor, invertDir))
+							if (_placeAblePieces[_selectPiece].sides[(dir+_placeAblePieces[_selectPiece].rotation)%6] != GetSide(neighbor, (invertDir + _grid.at(neighbor).rotation)%6))
 							{
 								allowedToPlace = false;
 								break;

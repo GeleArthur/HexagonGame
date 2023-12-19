@@ -16,7 +16,7 @@ public:
     Game();
     ~Game() override;
 
-    static Game* GetGamePtr();
+    static Game* GetGame();
     
     void Start() override;
     void Update() override;

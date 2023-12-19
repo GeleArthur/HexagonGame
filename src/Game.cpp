@@ -20,7 +20,7 @@ Game::~Game()
 	delete _camera;
 }
 
-Game* Game::GetGamePtr()
+Game* Game::GetGame()
 {
 	return _gamePtr;
 }

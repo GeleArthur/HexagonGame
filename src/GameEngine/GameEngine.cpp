@@ -160,6 +160,8 @@ void GameEngine::Run()
 		_mouse.left.upThisFrame = false;
 		_mouse.right.downThisFrame = false;
 		_mouse.right.upThisFrame = false;
+		_mouse.wheel.y = 0;
+		_mouse.wheel.x = 0;
 
 		while (SDL_PollEvent(&e) != 0)
 		{
@@ -196,6 +198,9 @@ void GameEngine::Run()
 					_mouse.right.holdingDown = false;
 					_mouse.right.upThisFrame = true;
 				}
+				break;
+			case SDL_MOUSEWHEEL:
+				_mouse.wheel = Vector2d{float(e.wheel.preciseX), float(e.wheel.preciseY)};
 				break;
 			default:
 				break;

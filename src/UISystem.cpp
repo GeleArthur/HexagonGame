@@ -43,6 +43,35 @@ void UISystem::InputCheck() const
 		}
 	}
 
+	const Uint8* keyboardState = GE->GetKeyBoardState();
+
+	if(keyboardState[SDL_SCANCODE_UP])
+	{
+
+	}
+
+	if(GE->GetMouse().wheel.y > 0.001f || GE->GetMouse().wheel.y < -0.001f )
+	{
+		std::cout << GE->GetMouse().wheel.y << '\n';
+		if(GE->GetMouse().wheel.y > 0)
+		{
+			_selectAblePieces[*_selectedPieceIndex].rotation++;
+			if(_selectAblePieces[*_selectedPieceIndex].rotation > 6)
+			{
+				_selectAblePieces[*_selectedPieceIndex].rotation = 0;
+			}
+		}
+		else
+		{
+			_selectAblePieces[*_selectedPieceIndex].rotation--;
+			if(_selectAblePieces[*_selectedPieceIndex].rotation < 0)
+			{
+				_selectAblePieces[*_selectedPieceIndex].rotation = 5;
+			}
+		}
+	}
+
+	
 }
 
 void UISystem::DrawDebugPiece(Vector2d position, const Piece& piece) const

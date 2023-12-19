@@ -119,7 +119,7 @@ void HexagonManager::Draw() const
 	for (const auto &piece : _grid)
 	{
 		DrawPiece(piece.first, piece.second);
-		DrawDebugPiece(piece.first, piece.second);
+		// DrawDebugPiece(piece.first, piece.second);
 	}
 
 	if (_selectPiece != -1)
@@ -127,7 +127,7 @@ void HexagonManager::Draw() const
 		const Hexagon hex = _layout.PixelToHex(GE->GetCameraPosition() + GE->GetMouse().position);
 
 		DrawPiece(hex, _placeAblePieces[_selectPiece]);
-		DrawDebugPiece(hex, _placeAblePieces[_selectPiece]);
+		// DrawDebugPiece(hex, _placeAblePieces[_selectPiece]);
 
 		Vector2d outline[6];
 		_layout.PolygonCorners(hex, outline);

@@ -1,6 +1,6 @@
 #include "Vector2d.h"
 
-#include <corecrt_math.h>
+#include <cmath>
 
 Vector2d::Vector2d() :Vector2d{ 0.0f, 0.0f }{}
 

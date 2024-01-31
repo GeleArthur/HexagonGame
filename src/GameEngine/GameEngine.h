@@ -1,6 +1,10 @@
 #pragma once
 #include <SDL_ttf.h>
+
+#ifdef WIN32
 #include <windows.h>
+#endif
+
 #include <SDL_video.h>
 #include <unordered_map>
 #include <vector>

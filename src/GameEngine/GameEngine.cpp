@@ -6,7 +6,7 @@
 #include <SDL_opengl.h>
 #include <SDL_ttf.h>
 #include <utility>
-#include <GL/glu.h>
+#include <GL/gl.h>
 
 GameEngine *GameEngine::m_gameEngineSingleton{nullptr};
 
@@ -69,7 +69,8 @@ void GameEngine::SetWindowSize(const int width, const int height)
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
-		gluOrtho2D(0, m_windowWidth, m_windowHeight, 0);
+		glOrtho(0, m_windowWidth, m_windowHeight, 0, -1, 1);
+
 		glViewport(0, 0, m_windowWidth, m_windowHeight);
 
 		glMatrixMode(GL_MODELVIEW);
@@ -131,7 +132,7 @@ void GameEngine::Initialize()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluOrtho2D(0, m_windowWidth, m_windowHeight, 0);
+	glOrtho(0, m_windowWidth, m_windowHeight, 0, -1, 1);
 	glViewport(0, 0, m_windowWidth, m_windowHeight);
 
 	glMatrixMode(GL_MODELVIEW);

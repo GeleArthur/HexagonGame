@@ -1,4 +1,5 @@
 #include "Matrix.h"
+#include <cmath>
 
 float & Matrix4x4::operator[](int index)
 {
